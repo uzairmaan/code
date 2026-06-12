@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Clash Display';
+  src: url('/fonts/ClashDisplay-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --accent-amber: #FF8A00;
+  --accent-cyan: #22D3EE;
+  --accent-red: #EF4444;
+  --base-midnight: #0A0C10;
+  --base-light: #1A1D24;
+  --text-primary: #FFFFFF;
+  --text-secondary: #D1D5DB;
+}
+
+* {
+  @apply box-border;
+}
+
+html {
+  scroll-behavior: smooth;
+  @apply antialiased;
+}
+
+body {
+  @apply bg-midnight text-white overflow-x-hidden;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-midnight-light;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-midnight-lighter rounded cursor-pointer hover:bg-slate-600;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  @apply outline-none ring-2 ring-amber ring-offset-2 ring-offset-midnight;
+}
+
+/* Lane dash pattern for hero */
+.lane-pattern {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent calc(50% - 1px),
+    #FF8A00 calc(50% - 1px),
+    #FF8A00 50%,
+    transparent 50%,
+    transparent 100%
+  );
+  background-size: 40px 2px;
+  background-position: 0 0;
+}
+
+/* Glassmorphism */
+.glass {
+  @apply bg-white/5 backdrop-blur-md border border-white/10;
+}
+
+/* Magnetic button styles */
+.magnetic-button {
+  @apply relative inline-block;
+}
