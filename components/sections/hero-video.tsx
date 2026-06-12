@@ -12,7 +12,7 @@ const POSTER_URL = `${BASE}/hero-truck-poster.jpg`
 export function HeroVideo() {
   return (
     <section className="relative h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Video background with brightening filter */}
+      {/* Video background with premium desaturated filter */}
       <video
         autoPlay
         muted
@@ -21,13 +21,13 @@ export function HeroVideo() {
         poster={POSTER_URL}
         className="absolute inset-0 h-full w-full object-cover"
         style={{
-          filter: 'brightness(1.15) contrast(1.1) saturate(1.2)',
+          filter: 'brightness(1.25) contrast(1.3) saturate(0.6) grayscale(0.4) hue-rotate(15deg)',
         }}
         src={VIDEO_URL}
       />
 
-      {/* Light overlay wash for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/40 to-transparent pointer-events-none" />
+      {/* Subtle premium overlay wash for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-white/20 to-white/10 pointer-events-none" />
 
       {/* Content */}
       <div className="relative h-full flex flex-col">
