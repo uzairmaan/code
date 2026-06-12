@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreightFlow Mobile Preview</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #0A0C10 0%, #1A1D24 100%);
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      text-align: center;
+      background: rgba(255,255,255,0.05);
+      padding: 40px 30px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #FF8A00;
+    }
+    .subtitle {
+      color: #D1D5DB;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 30px 0;
+    }
+    .btn {
+      padding: 16px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary {
+      background: #FF8A00;
+      color: black;
+    }
+    .btn-primary:hover {
+      background: #FFB133;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,138,0,0.3);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #FF8A00;
+      border: 2px solid #FF8A00;
+    }
+    .btn-secondary:hover {
+      background: rgba(255,138,0,0.1);
+    }
+    .info-box {
+      background: rgba(34,211,238,0.1);
+      border-left: 4px solid #22D3EE;
+      padding: 16px;
+      border-radius: 4px;
+      margin: 20px 0;
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .url-display {
+      background: #1A1D24;
+      padding: 12px;
+      border-radius: 6px;
+      margin: 20px 0;
+      word-break: break-all;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #22D3EE;
+    }
+    .features {
+      text-align: left;
+      margin: 30px 0;
+      font-size: 14px;
+    }
+    .features li {
+      margin: 8px 0;
+      padding-left: 24px;
+      position: relative;
+    }
+    .features li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #FF8A00;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚛 FreightFlow</h1>
+    <p class="subtitle">Premium Truck Dispatch Platform</p>
+
+    <div class="info-box">
+      ℹ️ Live preview is running and ready to view on your mobile device
+    </div>
+
+    <div class="button-group">
+      <a href="/" class="btn btn-primary">📱 View Homepage</a>
+      <a href="javascript:void(0)" onclick="copyToClipboard('http://localhost:3000')" class="btn btn-secondary">📋 Copy URL to Clipboard</a>
+    </div>
+
+    <div class="url-display" id="url">
+      Server: localhost:3000
+    </div>
+
+    <div style="text-align: center; color: #999; font-size: 12px; margin: 20px 0;">
+      If the above button doesn't work, navigate to: <strong>http://localhost:3000</strong>
+    </div>
+
+    <div class="features">
+      <h3 style="margin-bottom: 12px; color: #FF8A00;">✨ What You'll See:</h3>
+      <ul>
+        <li><strong>Hero Section</strong> — Animated truck + kinetic tagline</li>
+        <li><strong>Service Cards</strong> — Interactive 3-card service preview</li>
+        <li><strong>Timeline</strong> — "How Dispatch Works" animated journey</li>
+        <li><strong>Live Stats</strong> — Animated counters for key metrics</li>
+        <li><strong>Testimonials</strong> — Carrier success stories</li>
+        <li><strong>CTA</strong> — "Stop Searching. Start Hauling."</li>
+      </ul>
+    </div>
+
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; color: #999;">
+      <p>💡 Tip: For best mobile experience, scroll down to see all sections and interactions.</p>
+      <p>🎨 All animations are optimized for smooth 60fps performance.</p>
+    </div>
+  </div>
+
+  <script>
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('URL copied to clipboard!');
+      }).catch(() => {
+        alert('Copy failed. Manual URL: ' + text);
+      });
+    }
+
+    // Auto-redirect to homepage after 5 seconds
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 5000);
+  </script>
+</body>
+</html>
