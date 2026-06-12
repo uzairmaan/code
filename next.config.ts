@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
           formats: ['image/avif', 'image/webp'],
         },
       }),
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isGithubPages ? '/code' : '',
+  },
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,

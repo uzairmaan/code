@@ -3,8 +3,11 @@
 import React from 'react'
 import Link from 'next/link'
 
-const VIDEO_URL =
-  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_091828_e240eb17-6edc-4129-ad9d-98678e3fd238.mp4'
+// Semi-truck footage (Pexels, free license) served from /public so we control
+// availability. NEXT_PUBLIC_BASE_PATH covers the GitHub Pages /code prefix.
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
+const VIDEO_URL = `${BASE}/hero-truck.mp4`
+const POSTER_URL = `${BASE}/hero-truck-poster.jpg`
 
 export function HeroVideo() {
   return (
@@ -15,12 +18,13 @@ export function HeroVideo() {
         muted
         loop
         playsInline
+        poster={POSTER_URL}
         className="absolute inset-0 h-full w-full object-cover"
         src={VIDEO_URL}
       />
 
-      {/* Soft wash so the dark text stays readable over the footage */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/10 to-white/30 pointer-events-none" />
+      {/* Frosted wash so the dark text stays readable over the footage */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/85 via-white/60 to-white/40 pointer-events-none" />
 
       {/* Content */}
       <div className="relative h-full flex flex-col">
