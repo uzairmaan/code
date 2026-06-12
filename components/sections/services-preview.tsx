@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 
 const services = [
@@ -59,17 +60,17 @@ export function ServicesPreview() {
 
         <div className="space-y-4">
           {services.map((service, idx) => (
-            <motion.div
-              key={service.id}
-              onMouseEnter={() => setHoveredId(service.id)}
-              onMouseLeave={() => setHoveredId(null)}
-              className="relative"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.1 }}
-            >
+            <Link key={service.id} href={`/services/${service.id}`}>
               <motion.div
+                onMouseEnter={() => setHoveredId(service.id)}
+                onMouseLeave={() => setHoveredId(null)}
+                className="relative cursor-pointer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: idx * 0.1 }}
+              >
+                <motion.div
                 className="bg-midnight-light border border-white/10 rounded-xl p-8 cursor-pointer overflow-hidden group"
                 animate={{
                   flex: hoveredId === service.id ? 1.2 : 1,
@@ -118,7 +119,8 @@ export function ServicesPreview() {
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 />
               </motion.div>
-            </motion.div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>
