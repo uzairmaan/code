@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DispatchFormSchema, DispatchFormData, stepSchemas } from '@/lib/dispatch-schema'
+import { DispatchFormSchema, DispatchFormData } from '@/lib/dispatch-schema'
 import { MagneticButton } from '@/components/ui/magnetic-button'
 
 const steps = [
@@ -289,6 +289,9 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
             </div>
           </motion.div>
         )
+
+      default:
+        return null
     }
   }
 
@@ -297,7 +300,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
       {/* Progress Bar */}
       <motion.div className="mb-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <div className="flex justify-between items-center mb-6">
-          {steps.map((step, idx) => (
+          {steps.map((step) => (
             <div key={step.number} className="flex flex-col items-center flex-1">
               <motion.div
                 className="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 border-2"

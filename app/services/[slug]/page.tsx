@@ -4,9 +4,9 @@ import { ServicePage } from '@/components/sections/service-page'
 import { servicesData } from '@/lib/service-data'
 
 interface ServicePageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export async function generateStaticParams() {
@@ -16,7 +16,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
-  const service = servicesData[params.slug as keyof typeof servicesData]
+  const { slug } = await params
+  const service = servicesData[slug as keyof typeof servicesData]
 
   if (!service) {
     return { title: 'Not Found' }
@@ -29,13 +30,14 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
       title: `${service.name} Dispatch | FreightFlow`,
       description: service.description,
       type: 'website',
-      url: `https://freightflow.com/services/${params.slug}`,
+      url: `https://freightflow.com/services/${slug}`,
     },
   }
 }
 
-export default function ServicePageRoute({ params }: ServicePageProps) {
-  const service = servicesData[params.slug as keyof typeof servicesData]
+export default async function ServicePageRoute({ params }: ServicePageProps) {
+  const { slug } = await params
+  const service = servicesData[slug as keyof typeof servicesData]
 
   if (!service) {
     notFound()
