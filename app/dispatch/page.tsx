@@ -97,7 +97,7 @@ export default function DispatchPage() {
   }
 
   return (
-    <main className="min-h-screen bg-midnight py-20 px-4">
+    <main className="min-h-screen bg-midnight pt-36 pb-20 px-4">
       <motion.div
         className="container mx-auto"
         initial={{ opacity: 0, y: 20 }}

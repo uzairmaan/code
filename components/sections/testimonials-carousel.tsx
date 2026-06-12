@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
+import React, { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const testimonials = [
   {
@@ -33,6 +33,13 @@ const testimonials = [
 export function TestimonialsCarousel() {
   const [activeIdx, setActiveIdx] = useState(0)
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % testimonials.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <section className="py-24 px-4 bg-gradient-to-b from-midnight-light to-midnight">
       <div className="container mx-auto">
@@ -49,11 +56,13 @@ export function TestimonialsCarousel() {
 
         {/* Carousel */}
         <div className="max-w-2xl mx-auto">
+          <AnimatePresence mode="wait">
           <motion.div
             key={activeIdx}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.35 }}
             className="glass rounded-xl p-8 md:p-12 border border-amber/30 min-h-80"
           >
             {/* Stars */}
@@ -82,6 +91,7 @@ export function TestimonialsCarousel() {
               <span className="text-amber font-bold">{testimonials[activeIdx].metric}</span>
             </div>
           </motion.div>
+          </AnimatePresence>
 
           {/* Navigation Dots */}
           <div className="flex justify-center gap-3 mt-8">

@@ -1,126 +1,152 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-import { motion } from 'framer-motion'
 
+const PARTICLE_COUNT = 2600
+const DEPTH = 220
+
+/**
+ * Night-highway light trails: two streams of particles (amber = headlights,
+ * cyan = taillights) rushing toward the camera over a receding grid floor.
+ * Mouse moves the camera for parallax. Pure background — renders no text.
+ */
 export function ThreeHero() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    if (!containerRef.current) return
+    const container = containerRef.current
+    if (!container) return
 
-    // Scene setup
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / (window.innerHeight * 0.7), 0.1, 1000)
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    scene.fog = new THREE.Fog(0x0a0c10, 40, DEPTH * 0.9)
 
-    camera.position.z = 5
-    renderer.setSize(window.innerWidth, window.innerHeight * 0.7)
+    const camera = new THREE.PerspectiveCamera(70, container.clientWidth / container.clientHeight, 0.1, 1000)
+    camera.position.set(0, 3.2, 24)
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setSize(container.clientWidth, container.clientHeight)
     renderer.setClearColor(0x0a0c10, 1)
-    containerRef.current.appendChild(renderer.domElement)
+    container.appendChild(renderer.domElement)
 
-    // Create animated geometry
-    const geometry = new THREE.IcosahedronGeometry(2, 4)
-    const material = new THREE.MeshPhongMaterial({
-      color: 0xff8a00,
-      emissive: 0xff8a00,
-      wireframe: false,
-      shininess: 100,
-    })
-    const mesh = new THREE.Mesh(geometry, material)
-    scene.add(mesh)
+    // --- Light-trail particles ---------------------------------------------
+    const positions = new Float32Array(PARTICLE_COUNT * 3)
+    const colors = new Float32Array(PARTICLE_COUNT * 3)
+    const speeds = new Float32Array(PARTICLE_COUNT)
 
-    // Add wireframe overlay
-    const wireframeGeometry = new THREE.IcosahedronGeometry(2, 4)
-    const wireframeMaterial = new THREE.LineBasicMaterial({
-      color: 0x22d3ee,
-      linewidth: 2,
-      transparent: true,
-      opacity: 0.3,
-    })
-    const wireframe = new THREE.LineSegments(new THREE.EdgesGeometry(wireframeGeometry), wireframeMaterial)
-    mesh.add(wireframe)
+    const amber = new THREE.Color(0xff8a00)
+    const amberHot = new THREE.Color(0xffb133)
+    const cyan = new THREE.Color(0x22d3ee)
 
-    // Lighting
-    const light1 = new THREE.PointLight(0xff8a00, 1, 100)
-    light1.position.set(5, 5, 5)
-    scene.add(light1)
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const lane = Math.random() < 0.62 ? 'amber' : 'cyan'
+      // amber stream right of center, cyan stream left — like opposing traffic
+      const xCenter = lane === 'amber' ? 5 : -5
+      positions[i * 3] = xCenter + (Math.random() - 0.5) * 7
+      positions[i * 3 + 1] = Math.random() * 9 - 1.5
+      positions[i * 3 + 2] = -Math.random() * DEPTH
 
-    const light2 = new THREE.PointLight(0x22d3ee, 0.8, 100)
-    light2.position.set(-5, -5, 5)
-    scene.add(light2)
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4)
-    scene.add(ambientLight)
-
-    // Mouse tracking
-    const handleMouseMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth) * 2 - 1
-      const y = -(e.clientY / (window.innerHeight * 0.7)) * 2 + 1
-      setMousePos({ x, y })
+      const c = lane === 'amber' ? (Math.random() < 0.4 ? amberHot : amber) : cyan
+      colors[i * 3] = c.r
+      colors[i * 3 + 1] = c.g
+      colors[i * 3 + 2] = c.b
+      speeds[i] = 0.35 + Math.random() * 0.85
     }
 
-    window.addEventListener('mousemove', handleMouseMove)
+    const geometry = new THREE.BufferGeometry()
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
 
-    // Animation loop
+    // Soft radial sprite so points render as glowing orbs, not squares
+    const spriteCanvas = document.createElement('canvas')
+    spriteCanvas.width = spriteCanvas.height = 64
+    const ctx2d = spriteCanvas.getContext('2d')!
+    const grad = ctx2d.createRadialGradient(32, 32, 0, 32, 32, 32)
+    grad.addColorStop(0, 'rgba(255,255,255,1)')
+    grad.addColorStop(0.3, 'rgba(255,255,255,0.6)')
+    grad.addColorStop(1, 'rgba(255,255,255,0)')
+    ctx2d.fillStyle = grad
+    ctx2d.fillRect(0, 0, 64, 64)
+    const sprite = new THREE.CanvasTexture(spriteCanvas)
+
+    const material = new THREE.PointsMaterial({
+      size: 0.7,
+      map: sprite,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      sizeAttenuation: true,
+    })
+
+    const points = new THREE.Points(geometry, material)
+    scene.add(points)
+
+    // --- Receding grid floor ------------------------------------------------
+    const grid = new THREE.GridHelper(400, 60, 0xff8a00, 0x1a1d24)
+    grid.position.y = -4
+    const gridMat = grid.material as THREE.Material
+    gridMat.transparent = true
+    gridMat.opacity = 0.16
+    scene.add(grid)
+
+    // --- Mouse parallax (refs only — never re-creates the scene) -----------
+    const mouse = { x: 0, y: 0 }
+    const onMouseMove = (e: MouseEvent) => {
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+      mouse.y = (e.clientY / window.innerHeight) * 2 - 1
+    }
+    window.addEventListener('mousemove', onMouseMove, { passive: true })
+
+    const onResize = () => {
+      if (!container) return
+      camera.aspect = container.clientWidth / container.clientHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(container.clientWidth, container.clientHeight)
+    }
+    window.addEventListener('resize', onResize)
+
+    const clock = new THREE.Clock()
     let animationId: number
+    const pos = geometry.attributes.position.array as Float32Array
+
     const animate = () => {
       animationId = requestAnimationFrame(animate)
+      const dt = Math.min(clock.getDelta(), 0.05)
 
-      // Rotation
-      mesh.rotation.x += 0.002
-      mesh.rotation.y += 0.003
+      if (!prefersReduced) {
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          pos[i * 3 + 2] += speeds[i] * dt * 60
+          if (pos[i * 3 + 2] > 26) pos[i * 3 + 2] = -DEPTH
+        }
+        geometry.attributes.position.needsUpdate = true
+        grid.position.z = (grid.position.z + dt * 14) % (400 / 60)
+      }
 
-      // Mouse interaction
-      mesh.rotation.x += (mousePos.y * 0.5 - mesh.rotation.x) * 0.05
-      mesh.rotation.y += (mousePos.x * 0.5 - mesh.rotation.y) * 0.05
-
-      // Pulsing scale
-      const scale = 1 + Math.sin(Date.now() * 0.003) * 0.1
-      mesh.scale.set(scale, scale, scale)
+      // Ease camera toward mouse for parallax
+      camera.position.x += (mouse.x * 3 - camera.position.x) * 0.04
+      camera.position.y += (3.2 - mouse.y * 1.6 - camera.position.y) * 0.04
+      camera.lookAt(0, 2, -30)
 
       renderer.render(scene, camera)
     }
-
     animate()
 
-    // Handle resize
-    const handleResize = () => {
-      if (!containerRef.current) return
-      const width = window.innerWidth
-      const height = window.innerHeight * 0.7
-
-      camera.aspect = width / height
-      camera.updateProjectionMatrix()
-      renderer.setSize(width, height)
-    }
-
-    window.addEventListener('resize', handleResize)
-
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('resize', onResize)
       cancelAnimationFrame(animationId)
+      geometry.dispose()
+      material.dispose()
+      sprite.dispose()
       renderer.dispose()
-      containerRef.current?.removeChild(renderer.domElement)
+      if (renderer.domElement.parentNode === container) container.removeChild(renderer.domElement)
     }
-  }, [mousePos])
+  }, [])
 
-  return (
-    <div ref={containerRef} className="relative w-full h-[70vh] bg-gradient-to-b from-midnight-light to-midnight">
-      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
-        >
-          <h1 className="text-6xl md:text-7xl font-clash font-bold tracking-wide mb-4">FreightFlow</h1>
-          <p className="text-xl text-slate-300">Premium Truck Dispatch Platform</p>
-        </motion.div>
-      </div>
-    </div>
-  )
+  return <div ref={containerRef} className="absolute inset-0" aria-hidden="true" />
 }

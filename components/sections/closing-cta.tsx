@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { MagneticButton } from '@/components/ui/magnetic-button'
 
@@ -44,9 +45,11 @@ export function ClosingCTA() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <MagneticButton variant="primary">
-              Get Dispatched Now →
-            </MagneticButton>
+            <Link href="/dispatch" data-cursor="hover" className="inline-block">
+              <MagneticButton variant="primary">
+                Get Dispatched Now →
+              </MagneticButton>
+            </Link>
           </motion.div>
 
           {/* Subtext */}

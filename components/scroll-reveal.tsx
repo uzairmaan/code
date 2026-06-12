@@ -1,56 +1,32 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
 
 interface ScrollRevealProps {
   children: React.ReactNode
   delay?: number
   duration?: number
+  y?: number
   className?: string
 }
 
-export function ScrollReveal({ children, delay = 0, duration = 0.8, className = '' }: ScrollRevealProps) {
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!ref.current) return
-
-    gsap.fromTo(
-      ref.current,
-      {
-        opacity: 0,
-        y: 50,
-        scale: 0.9,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration,
-        delay,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: ref.current,
-          start: 'top 80%',
-          end: 'top 50%',
-          scrub: 0.5,
-        },
-      },
-    )
-
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
-    }
-  }, [delay, duration])
+/** Fade-and-rise reveal when the element scrolls into view. */
+export function ScrollReveal({ children, delay = 0, duration = 0.7, y = 36, className = '' }: ScrollRevealProps) {
+  const reduced = useReducedMotion()
 
   return (
-    <div ref={ref} className={className}>
+    <motion.div
+      className={className}
+      initial={reduced ? false : { opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
       {children}
-    </div>
+    </motion.div>
   )
 }
 
@@ -60,26 +36,28 @@ interface ParallaxProps {
   className?: string
 }
 
+/** Subtle scroll-linked vertical drift. Cleans up only its own trigger. */
 export function Parallax({ children, offset = 50, className = '' }: ParallaxProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!ref.current) return
+    gsap.registerPlugin(ScrollTrigger)
 
-    gsap.to(ref.current, {
-      y: offset,
-      scrollTrigger: {
-        trigger: ref.current,
-        start: 'top center',
-        end: 'bottom center',
-        scrub: 1,
-        markers: false,
-      },
-    })
+    const ctx = gsap.context(() => {
+      gsap.to(ref.current, {
+        y: offset,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: ref.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      })
+    }, ref)
 
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
-    }
+    return () => ctx.revert()
   }, [offset])
 
   return (

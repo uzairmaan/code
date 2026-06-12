@@ -1,86 +1,67 @@
 'use client'
 
-import React, { useRef, useEffect } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
+import React, { useEffect, useRef } from 'react'
+import { useInView, useMotionValue, useSpring } from 'framer-motion'
 
 interface AnimatedStatProps {
   value: number
   label: string
   suffix?: string
+  prefix?: string
   color?: string
-  icon?: string
 }
 
-export function AnimatedStat({ value, label, suffix = '', color = '#FF8A00', icon = '' }: AnimatedStatProps) {
-  const numberRef = useRef<HTMLDivElement>(null)
+export function AnimatedStat({ value, label, suffix = '', prefix = '', color = '#FF8A00' }: AnimatedStatProps) {
+  const ref = useRef<HTMLDivElement>(null)
+  const numberRef = useRef<HTMLSpanElement>(null)
   const barRef = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+
+  const motionValue = useMotionValue(0)
+  const spring = useSpring(motionValue, { stiffness: 60, damping: 18 })
 
   useEffect(() => {
-    if (!numberRef.current || !barRef.current) return
-
-    ScrollTrigger.create({
-      trigger: numberRef.current,
-      onEnter: () => {
-        // Count up animation
-        gsap.fromTo(
-          { num: 0 },
-          { num: value },
-          {
-            duration: 2,
-            ease: 'power2.out',
-            onUpdate: function () {
-              if (numberRef.current) {
-                numberRef.current.textContent = Math.floor(this.targets()[0].num).toLocaleString()
-              }
-            },
-          },
-        )
-
-        // Bar fill animation
-        gsap.fromTo(
-          barRef.current,
-          { scaleX: 0 },
-          {
-            scaleX: 1,
-            duration: 2,
-            ease: 'power2.out',
-            transformOrigin: 'left',
-          },
-        )
-      },
-      once: true,
-    })
-
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
+    if (inView) {
+      motionValue.set(value)
+      if (barRef.current) {
+        barRef.current.style.transform = 'scaleX(1)'
+      }
     }
-  }, [value])
+  }, [inView, value, motionValue])
+
+  useEffect(() => {
+    return spring.on('change', (latest) => {
+      if (numberRef.current) {
+        numberRef.current.textContent = Math.floor(latest).toLocaleString()
+      }
+    })
+  }, [spring])
 
   return (
-    <div className="space-y-3">
-      {icon && <div className="text-4xl">{icon}</div>}
-
-      <div className="h-12 flex items-center">
-        <div ref={numberRef} className="text-4xl font-bold font-mono" style={{ color }}>
+    <div ref={ref} className="group">
+      <div className="flex items-baseline gap-1">
+        {prefix && (
+          <span className="font-clash text-2xl font-bold md:text-3xl" style={{ color }}>
+            {prefix}
+          </span>
+        )}
+        <span ref={numberRef} className="font-clash text-4xl font-bold tabular-nums md:text-5xl" style={{ color }}>
           0
-        </div>
-        <span className="ml-2 text-lg" style={{ color }}>
+        </span>
+        <span className="font-clash text-2xl font-bold md:text-3xl" style={{ color }}>
           {suffix}
         </span>
       </div>
 
-      <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+      <div className="mt-4 h-px w-full overflow-hidden bg-white/10">
         <div
           ref={barRef}
-          className="h-full rounded-full"
-          style={{ backgroundColor: color }}
+          className="h-full origin-left transition-transform duration-[1.6s] ease-out"
+          style={{ backgroundColor: color, transform: 'scaleX(0)' }}
         />
       </div>
 
-      <p className="text-sm text-slate-400">{label}</p>
+      <p className="mt-3 text-sm text-slate-400">{label}</p>
     </div>
   )
 }

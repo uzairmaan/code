@@ -1,100 +1,81 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { motion, useTransform, useMotionValue } from 'framer-motion'
+import { motion, useMotionValue, useSpring } from 'framer-motion'
 
+/**
+ * Custom cursor: amber dot + trailing ring. Only activates on devices with a
+ * fine pointer — touch devices keep their native behavior, and the native
+ * cursor is hidden via class only once the component has mounted, so the page
+ * is never left cursor-less if JS fails.
+ */
 export function CustomCursor() {
-  const cursorX = useMotionValue(0)
-  const cursorY = useMotionValue(0)
-  const [isVisible, setIsVisible] = useState(false)
+  const [enabled, setEnabled] = useState(false)
+  const [hovering, setHovering] = useState(false)
+  const [pressed, setPressed] = useState(false)
+
+  const x = useMotionValue(-100)
+  const y = useMotionValue(-100)
+  const ringX = useSpring(x, { stiffness: 350, damping: 30, mass: 0.6 })
+  const ringY = useSpring(y, { stiffness: 350, damping: 30, mass: 0.6 })
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      cursorX.set(e.clientX)
-      cursorY.set(e.clientY)
-      setIsVisible(true)
+    if (!window.matchMedia('(pointer: fine)').matches) return
+    setEnabled(true)
+    document.documentElement.classList.add('custom-cursor-active')
+
+    const move = (e: MouseEvent) => {
+      x.set(e.clientX)
+      y.set(e.clientY)
+      const target = e.target as HTMLElement
+      setHovering(!!target.closest('a, button, [role="button"], [data-cursor="hover"], input, select, textarea, label'))
     }
+    const down = () => setPressed(true)
+    const up = () => setPressed(false)
 
-    const handleMouseLeave = () => setIsVisible(false)
-    const handleMouseEnter = () => setIsVisible(true)
-
-    window.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseleave', handleMouseLeave)
-    document.addEventListener('mouseenter', handleMouseEnter)
-
+    window.addEventListener('mousemove', move, { passive: true })
+    window.addEventListener('mousedown', down)
+    window.addEventListener('mouseup', up)
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseleave', handleMouseLeave)
-      document.removeEventListener('mouseenter', handleMouseEnter)
+      document.documentElement.classList.remove('custom-cursor-active')
+      window.removeEventListener('mousemove', move)
+      window.removeEventListener('mousedown', down)
+      window.removeEventListener('mouseup', up)
     }
-  }, [cursorX, cursorY])
+  }, [x, y])
+
+  if (!enabled) return null
 
   return (
     <>
-      {/* Hide default cursor */}
-      <style>{`
-        * { cursor: none !important; }
-        a, button, [role="button"] { cursor: none !important; }
-      `}</style>
-
-      {/* Outer ring */}
+      {/* Trailing ring */}
       <motion.div
-        className="fixed pointer-events-none mix-blend-screen z-50"
-        style={{
-          x: cursorX,
-          y: cursorY,
-          translateX: '-50%',
-          translateY: '-50%',
-        }}
+        className="pointer-events-none fixed left-0 top-0 z-[100] hidden lg:block"
+        style={{ x: ringX, y: ringY, translateX: '-50%', translateY: '-50%' }}
       >
         <motion.div
-          className="w-8 h-8 border-2 border-amber rounded-full"
-          animate={{ opacity: isVisible ? 1 : 0 }}
+          className="rounded-full border border-amber/70"
+          animate={{
+            width: hovering ? 52 : 34,
+            height: hovering ? 52 : 34,
+            opacity: pressed ? 0.5 : 1,
+            backgroundColor: hovering ? 'rgba(255,138,0,0.08)' : 'rgba(255,138,0,0)',
+          }}
           transition={{ duration: 0.2 }}
         />
       </motion.div>
 
-      {/* Inner dot */}
+      {/* Dot */}
       <motion.div
-        className="fixed pointer-events-none z-50"
-        style={{
-          x: cursorX,
-          y: cursorY,
-          translateX: '-50%',
-          translateY: '-50%',
-        }}
+        className="pointer-events-none fixed left-0 top-0 z-[100] hidden lg:block"
+        style={{ x, y, translateX: '-50%', translateY: '-50%' }}
       >
         <motion.div
-          className="w-2 h-2 bg-amber rounded-full"
-          animate={{ opacity: isVisible ? 1 : 0 }}
-          transition={{ duration: 0.2 }}
+          className="rounded-full bg-amber"
+          animate={{ width: pressed ? 5 : 7, height: pressed ? 5 : 7 }}
+          transition={{ duration: 0.15 }}
         />
       </motion.div>
-
-      {/* Trailing particles */}
-      {[...Array(5)].map((_, i) => (
-        <TrailingParticle key={i} delay={i * 0.05} cursorX={cursorX} cursorY={cursorY} />
-      ))}
     </>
-  )
-}
-
-function TrailingParticle({ delay, cursorX, cursorY }: any) {
-  const x = useTransform(cursorX, (latest: number) => latest - (delay * 20))
-  const y = useTransform(cursorY, (latest: number) => latest - (delay * 20))
-
-  return (
-    <motion.div
-      className="fixed pointer-events-none w-1 h-1 bg-amber rounded-full z-40"
-      style={{
-        x,
-        y,
-        translateX: '-50%',
-        translateY: '-50%',
-      }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay }}
-    />
   )
 }

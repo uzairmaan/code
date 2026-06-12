@@ -3,49 +3,35 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
-const logos = [
-  { name: 'DAT', emoji: '📊' },
-  { name: 'Truckstop', emoji: '🛑' },
-  { name: 'Amazon Relay', emoji: '📦' },
-  { name: 'Load Board', emoji: '📋' },
-  { name: 'Broker Direct', emoji: '🤝' },
-]
+const partners = ['DAT One', 'Truckstop', 'Amazon Relay', 'C.H. Robinson', 'TQL', 'J.B. Hunt 360', 'Coyote', 'Uber Freight']
 
 export function LogoMarquee() {
-  const duplicated = [logos, logos, logos].flat()
+  const row = [...partners, ...partners]
 
   return (
-    <section className="py-16 px-4 bg-midnight-light border-t border-b border-white/5">
-      <div className="container mx-auto">
-        <p className="text-center text-slate-500 text-sm uppercase tracking-widest mb-8">
-          Trusted By
-        </p>
+    <section className="border-y border-white/5 bg-midnight py-12 overflow-hidden">
+      <p className="mb-8 text-center font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
+        Sourcing loads across every major board
+      </p>
 
-        <div className="overflow-hidden">
-          <motion.div
-            className="flex gap-16 items-center"
-            animate={{ x: [-100 * (logos.length) + '%', 0] }}
-            transition={{
-              duration: 30,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
-          >
-            {duplicated.map((logo, idx) => (
-              <motion.div
-                key={idx}
-                className="flex items-center gap-3 flex-shrink-0 cursor-pointer"
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: 'spring', stiffness: 300 }}
-              >
-                <span className="text-3xl">{logo.emoji}</span>
-                <span className="text-slate-400 font-semibold whitespace-nowrap">
-                  {logo.name}
-                </span>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+      <div
+        className="relative"
+        style={{ maskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)' }}
+      >
+        <motion.div
+          className="flex w-max items-center gap-16 px-8"
+          animate={{ x: ['0%', '-50%'] }}
+          transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+        >
+          {row.map((name, idx) => (
+            <span
+              key={idx}
+              className="whitespace-nowrap font-clash text-xl font-semibold text-slate-600 transition-colors hover:text-slate-300"
+            >
+              {name}
+            </span>
+          ))}
+        </motion.div>
       </div>
     </section>
   )

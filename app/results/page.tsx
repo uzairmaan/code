@@ -23,7 +23,7 @@ export default function ResultsPage() {
   return (
     <main className="bg-midnight">
       {/* Hero */}
-      <section className="py-20 px-4 bg-gradient-to-b from-midnight-light to-midnight">
+      <section className="pt-36 pb-20 px-4 bg-gradient-to-b from-midnight-light to-midnight">
         <motion.div
           className="container mx-auto text-center max-w-2xl"
           initial={{ opacity: 0, y: 20 }}

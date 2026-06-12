@@ -6,15 +6,22 @@ import { ScrollReveal } from '@/components/scroll-reveal'
 
 export function InteractiveStats() {
   return (
-    <section className="py-24 px-4 bg-midnight border-y border-white/5">
-      <ScrollReveal className="container mx-auto">
-        <div className="grid md:grid-cols-4 gap-8">
-          <AnimatedStat value={1200} label="Loads Dispatched" suffix="+" icon="📊" color="#FF8A00" />
-          <AnimatedStat value={2400} label="Active Carriers" suffix="" icon="👥" color="#22D3EE" />
-          <AnimatedStat value={287} label="Avg Rate (¢/mi)" suffix="¢" icon="💰" color="#A78BFA" />
-          <AnimatedStat value={98} label="On-Time Rate" suffix="%" icon="✓" color="#10B981" />
+    <section className="border-y border-white/5 bg-midnight-light/40 px-4 py-24 lg:px-8">
+      <div className="container mx-auto">
+        <ScrollReveal>
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-amber">By the numbers</p>
+          <h2 className="mt-3 max-w-xl font-clash text-3xl font-bold md:text-4xl">
+            Dispatch that pays for itself
+          </h2>
+        </ScrollReveal>
+
+        <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          <AnimatedStat value={1200} suffix="+" label="Loads dispatched every month" color="#FF8A00" />
+          <AnimatedStat value={240} suffix="+" label="Active carriers on the roster" color="#22D3EE" />
+          <AnimatedStat value={287} suffix="¢/mi" label="Average rate per mile negotiated" color="#A78BFA" />
+          <AnimatedStat value={98} suffix="%" label="On-time pickup & delivery rate" color="#10B981" />
         </div>
-      </ScrollReveal>
+      </div>
     </section>
   )
 }

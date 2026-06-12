@@ -35,7 +35,7 @@ export function ServicePage({ service }: ServicePageProps) {
   return (
     <main className="bg-midnight">
       {/* Hero Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-midnight-light to-midnight relative overflow-hidden">
+      <section className="pt-36 pb-20 px-4 bg-gradient-to-b from-midnight-light to-midnight relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div
             className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10"
@@ -50,15 +50,15 @@ export function ServicePage({ service }: ServicePageProps) {
           animate="visible"
         >
           <motion.div variants={itemVariants} className="max-w-3xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-5xl">{service.icon}</span>
-              <div>
-                <h1 className="text-5xl md:text-6xl font-clash font-bold tracking-wide">
-                  {service.name}
-                </h1>
-                <p className="text-lg text-slate-400 mt-2">{service.subtitle}</p>
-              </div>
-            </div>
+            <p
+              className="mb-4 inline-block rounded-full border px-4 py-1.5 font-mono text-xs uppercase tracking-[0.25em]"
+              style={{ color: service.accent, borderColor: `${service.accent}55`, backgroundColor: `${service.accent}11` }}
+            >
+              {service.subtitle}
+            </p>
+            <h1 className="text-5xl md:text-6xl font-clash font-bold tracking-tight">
+              {service.name}
+            </h1>
           </motion.div>
 
           <motion.p

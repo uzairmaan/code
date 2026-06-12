@@ -1,120 +1,90 @@
 'use client'
 
-import React from 'react'
-import { motion } from 'framer-motion'
+import React, { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { ScrollReveal } from '@/components/scroll-reveal'
 
 const steps = [
   {
     number: '01',
     title: 'Sign Up',
-    description: 'Create your carrier profile in minutes with your MC/DOT info',
-    icon: '📝',
+    description: 'Create your carrier profile in minutes with your MC/DOT info. No setup fees, no contracts.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
+        <path strokeLinecap="round" d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7z" />
+      </svg>
+    ),
   },
   {
     number: '02',
-    title: 'We Find Loads',
-    description: 'Real-time matching with premium brokers and direct shippers',
-    icon: '🔍',
+    title: 'We Hunt Loads',
+    description: 'Your dispatcher works the boards and broker relationships to line up the best-paying freight.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
+        <path strokeLinecap="round" d="m21 21-4.35-4.35M17 11a6 6 0 1 1-12 0 6 6 0 0 1 12 0z" />
+      </svg>
+    ),
   },
   {
     number: '03',
     title: 'You Drive',
-    description: 'Execute the load with 24/7 dispatch support and real-time tracking',
-    icon: '🛣️',
+    description: 'Run the load with 24/7 dispatch support. We handle check calls, detention, and lumper issues.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
+        <path strokeLinecap="round" d="M3 8h10v8H3zM13 10h3.6l2.4 3v3h-6M6.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM16.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+      </svg>
+    ),
   },
   {
     number: '04',
     title: 'You Get Paid',
-    description: 'Fast settlements, transparent rates, and instant payouts',
-    icon: '💰',
+    description: 'Clean paperwork means fast settlements. Transparent flat-percentage fee, nothing hidden.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6">
+        <path strokeLinecap="round" d="M12 6v12m4-9.5C16 7 14.2 6 12 6s-4 1-4 2.75 1.5 2.4 4 2.75 4 1.2 4 2.75S14.2 17 12 17s-4-1-4-2.5" />
+      </svg>
+    ),
   },
 ]
 
 export function HowDispatchWorks() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 75%', 'end 60%'] })
+  const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1])
+
   return (
-    <section className="py-32 px-4 bg-gradient-to-b from-midnight to-midnight-light relative overflow-hidden">
-      <div className="container mx-auto">
-        <motion.div
-          className="text-center mb-20"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-4xl md:text-5xl font-clash font-bold tracking-wide mb-4">
-            How Dispatch Works
+    <section className="relative overflow-hidden bg-midnight px-4 py-28 lg:px-8" id="how-it-works">
+      <div className="container mx-auto" ref={ref}>
+        <ScrollReveal className="mb-16 max-w-2xl">
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-amber">The process</p>
+          <h2 className="mt-3 font-clash text-4xl font-bold md:text-5xl">
+            From signup to settled, <span className="text-slate-500">in four moves.</span>
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">
-            From signup to your first load, the process is streamlined and transparent.
-          </p>
-        </motion.div>
+        </ScrollReveal>
 
-        {/* Timeline visualization */}
         <div className="relative">
-          {/* Animated connecting line */}
-          <div className="absolute top-1/4 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber to-transparent opacity-30" />
+          {/* Scroll-drawn connecting line (desktop) */}
+          <div className="absolute left-0 right-0 top-7 hidden h-px bg-white/10 lg:block">
+            <motion.div className="h-full origin-left bg-gradient-to-r from-amber to-cyan" style={{ scaleX: lineScale }} />
+          </div>
 
-          {/* Steps grid */}
-          <div className="grid md:grid-cols-4 gap-8 relative z-10">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-              >
-                {/* Step card */}
-                <div className="relative">
-                  {/* Step number circle */}
-                  <motion.div
-                    className="w-16 h-16 rounded-full bg-gradient-to-br from-amber to-amber-dark flex items-center justify-center mb-6 mx-auto"
-                    whileHover={{ scale: 1.1 }}
-                  >
-                    <span className="text-2xl font-clash font-bold text-black">
-                      {step.number}
-                    </span>
-                  </motion.div>
-
-                  {/* Content */}
-                  <div className="text-center">
-                    <h3 className="text-xl font-clash font-bold mb-2">{step.title}</h3>
-                    <p className="text-slate-400 text-sm leading-relaxed">
-                      {step.description}
-                    </p>
+              <ScrollReveal key={step.number} delay={idx * 0.12}>
+                <motion.div className="group relative" whileHover={{ y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 22 }}>
+                  {/* Node */}
+                  <div className="relative z-10 mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-amber/30 bg-midnight-light text-amber transition-colors group-hover:border-amber group-hover:bg-amber/10">
+                    {step.icon}
                   </div>
 
-                  {/* Icon */}
-                  <div className="text-4xl text-center mt-4 opacity-40">{step.icon}</div>
-
-                  {/* Connector arrow (not on last) */}
-                  {idx < steps.length - 1 && (
-                    <div className="hidden md:block absolute -right-4 top-1/3 text-amber opacity-50">
-                      →
-                    </div>
-                  )}
-                </div>
-              </motion.div>
+                  <span className="font-mono text-xs text-slate-600">{step.number}</span>
+                  <h3 className="mt-1 font-clash text-xl font-bold">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-400">{step.description}</p>
+                </motion.div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
-
-        {/* Truck icon travelling the path (decorative) */}
-        <motion.div
-          className="absolute top-1/4 left-0 text-amber text-4xl"
-          animate={{
-            x: ['0%', '90%'],
-            opacity: [0, 1, 1, 0],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          style={{ pointerEvents: 'none' }}
-        >
-          🚛
-        </motion.div>
       </div>
     </section>
   )
