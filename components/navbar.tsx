@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MagneticButton } from '@/components/ui/magnetic-button'
+import { Menu, X } from 'lucide-react'
 
 const links = [
-  { href: '/services/semis', label: 'Semi-Trucks' },
+  { href: '/services/semis', label: 'Semis' },
   { href: '/services/box-trucks', label: 'Box Trucks' },
   { href: '/services/hotshots', label: 'Hotshots' },
   { href: '/results', label: 'Results' },
@@ -31,121 +31,83 @@ export function Navbar() {
   }, [pathname])
 
   return (
-    <>
-      <motion.header
-        className="fixed top-0 inset-x-0 z-40 transition-colors duration-300"
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        style={{
-          backgroundColor: scrolled ? 'rgba(10, 12, 16, 0.82)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(14px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
-        }}
-      >
-        <nav className="container mx-auto px-4 lg:px-8 h-16 lg:h-20 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group" data-cursor="hover">
-            <span className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-amber/15 border border-amber/30 overflow-hidden">
-              <motion.svg
-                viewBox="0 0 24 24"
-                className="h-5 w-5 text-amber"
-                fill="currentColor"
-                whileHover={{ x: [0, 14, -14, 0] }}
-                transition={{ duration: 0.5 }}
-              >
-                <path d="M3 7a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v7H3V7zm12 2h2.6a1 1 0 0 1 .8.4l1.9 2.5a1 1 0 0 1 .2.6V14h-5.5V9zM6.5 18.5A1.75 1.75 0 1 1 6.5 15a1.75 1.75 0 0 1 0 3.5zm10.5 0a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5z" />
-              </motion.svg>
-            </span>
-            <span className="font-clash font-bold text-lg tracking-tight">
-              Freight<span className="text-amber">Flow</span>
-            </span>
-          </Link>
+    <header
+      className="fixed top-0 inset-x-0 z-40 transition-colors duration-300"
+      style={{
+        backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.9)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(14px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(0,0,0,0.06)' : '1px solid transparent',
+      }}
+    >
+      <nav className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
+        {/* Brand */}
+        <Link href="/" className="text-2xl font-semibold text-gray-900 tracking-tight" data-cursor="hover">
+          FreightFlow
+        </Link>
 
-          {/* Desktop links */}
-          <div className="hidden lg:flex items-center gap-8">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                data-cursor="hover"
-                className={`relative text-sm font-medium transition-colors hover:text-white ${
-                  pathname === link.href ? 'text-white' : 'text-slate-400'
-                }`}
-              >
-                {link.label}
-                {pathname === link.href && (
-                  <motion.span
-                    layoutId="nav-active"
-                    className="absolute -bottom-1.5 left-0 right-0 h-px bg-amber"
-                  />
-                )}
-              </Link>
-            ))}
-          </div>
-
-          <div className="hidden lg:block">
-            <Link href="/dispatch" data-cursor="hover">
-              <MagneticButton variant="primary">Get Dispatched</MagneticButton>
+        {/* Desktop links */}
+        <div className="hidden md:flex items-center gap-8">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              data-cursor="hover"
+              className={`text-sm font-medium transition-colors ${
+                pathname === link.href ? 'text-gray-900' : 'text-gray-900 hover:text-gray-700'
+              }`}
+            >
+              {link.label}
             </Link>
-          </div>
-
-          {/* Mobile toggle */}
-          <button
-            className="lg:hidden relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5"
-            onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
+          ))}
+          <Link
+            href="/dispatch"
+            data-cursor="hover"
+            className="px-4 py-2 rounded-full text-sm font-medium text-white bg-[#202A36] hover:bg-[#1a2229] transition-colors"
           >
-            <motion.span animate={{ rotate: open ? 45 : 0, y: open ? 4 : 0 }} className="h-0.5 w-6 bg-white rounded" />
-            <motion.span animate={{ opacity: open ? 0 : 1 }} className="h-0.5 w-6 bg-white rounded" />
-            <motion.span animate={{ rotate: open ? -45 : 0, y: open ? -4 : 0 }} className="h-0.5 w-6 bg-white rounded" />
-          </button>
-        </nav>
-      </motion.header>
+            Get Dispatched
+          </Link>
+        </div>
 
-      {/* Mobile menu overlay */}
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden text-gray-900 p-1"
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle menu"
+        >
+          {open ? <X size={26} /> : <Menu size={26} />}
+        </button>
+      </nav>
+
+      {/* Mobile dropdown */}
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-30 bg-midnight/95 backdrop-blur-xl lg:hidden flex flex-col justify-center px-8"
-            initial={{ opacity: 0, clipPath: 'circle(0% at 100% 0%)' }}
-            animate={{ opacity: 1, clipPath: 'circle(150% at 100% 0%)' }}
-            exit={{ opacity: 0, clipPath: 'circle(0% at 100% 0%)' }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden mx-4 mb-4 rounded-2xl bg-white/95 backdrop-blur-lg shadow-xl border border-gray-100 overflow-hidden"
           >
-            <nav className="flex flex-col gap-2">
-              {[{ href: '/', label: 'Home' }, ...links].map((link, i) => (
-                <motion.div
-                  key={link.href}
-                  initial={{ opacity: 0, x: 40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.15 + i * 0.06 }}
-                >
-                  <Link
-                    href={link.href}
-                    className="block py-3 font-clash text-3xl font-bold text-slate-200 hover:text-amber transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.55 }}
-                className="pt-6"
-              >
+            <nav className="flex flex-col p-4">
+              {[{ href: '/', label: 'Home' }, ...links].map((link) => (
                 <Link
-                  href="/dispatch"
-                  className="inline-block rounded-full bg-amber px-8 py-4 font-semibold text-midnight"
+                  key={link.href}
+                  href={link.href}
+                  className="px-4 py-3 rounded-xl text-base font-medium text-gray-900 hover:bg-gray-100 transition-colors"
                 >
-                  Get Dispatched →
+                  {link.label}
                 </Link>
-              </motion.div>
+              ))}
+              <Link
+                href="/dispatch"
+                className="mt-2 px-4 py-3 rounded-full text-center font-medium text-white bg-[#202A36] hover:bg-[#1a2229] transition-colors"
+              >
+                Get Dispatched
+              </Link>
             </nav>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </header>
   )
 }

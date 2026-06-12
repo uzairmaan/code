@@ -41,7 +41,7 @@ export function TestimonialsCarousel() {
   }, [])
 
   return (
-    <section className="py-24 px-4 bg-gradient-to-b from-midnight-light to-midnight">
+    <section className="py-24 px-4 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto">
         <motion.div
           className="text-center mb-16"
@@ -51,7 +51,7 @@ export function TestimonialsCarousel() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-5xl font-clash font-bold mb-4">Carriers Are Earning More</h2>
-          <p className="text-lg text-slate-400">Real results from carriers using FreightFlow</p>
+          <p className="text-lg text-gray-600">Real results from carriers using FreightFlow</p>
         </motion.div>
 
         {/* Carousel */}
@@ -75,19 +75,19 @@ export function TestimonialsCarousel() {
             </div>
 
             {/* Quote */}
-            <p className="text-2xl font-clash font-bold mb-8 text-white">
+            <p className="text-2xl font-clash font-semibold mb-8 text-gray-900">
               "{testimonials[activeIdx].quote}"
             </p>
 
             {/* Author */}
-            <div className="space-y-2 mb-6 pb-6 border-b border-white/10">
+            <div className="space-y-2 mb-6 pb-6 border-b border-gray-200">
               <p className="font-bold text-lg">{testimonials[activeIdx].name}</p>
-              <p className="text-sm text-slate-400">{testimonials[activeIdx].company}</p>
+              <p className="text-sm text-gray-600">{testimonials[activeIdx].company}</p>
             </div>
 
             {/* Metric */}
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">{testimonials[activeIdx].service}</span>
+              <span className="text-sm text-gray-600">{testimonials[activeIdx].service}</span>
               <span className="text-amber font-bold">{testimonials[activeIdx].metric}</span>
             </div>
           </motion.div>
@@ -102,7 +102,7 @@ export function TestimonialsCarousel() {
                 className="h-2 rounded-full transition-all"
                 animate={{
                   width: activeIdx === idx ? 24 : 8,
-                  backgroundColor: activeIdx === idx ? '#FF8A00' : 'rgba(255,255,255,0.2)',
+                  backgroundColor: activeIdx === idx ? '#FF8A00' : 'rgba(0,0,0,0.15)',
                 }}
               />
             ))}

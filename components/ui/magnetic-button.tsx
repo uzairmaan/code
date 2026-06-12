@@ -45,11 +45,11 @@ export function MagneticButton({
   }
 
   const baseStyles =
-    'px-8 py-3.5 rounded-full font-semibold transition-all duration-300 relative'
+    'px-6 py-3 rounded-full font-medium transition-colors duration-300 relative'
   const primaryStyles =
-    'bg-amber hover:bg-amber-light text-midnight shadow-lg shadow-amber/25 hover:shadow-amber/40'
+    'bg-[#202A36] hover:bg-[#1a2229] text-white shadow-lg shadow-gray-900/10'
   const ghostStyles =
-    'border border-white/25 text-white hover:border-amber hover:text-amber hover:bg-amber/5'
+    'bg-gray-300 text-gray-800 hover:bg-gray-400'
 
   return (
     <div

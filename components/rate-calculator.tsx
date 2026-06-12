@@ -34,7 +34,7 @@ export function RateCalculator({ avgRate, accent }: RateCalculatorProps) {
           {/* Miles Per Week */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-semibold text-slate-300">Miles Per Week</label>
+              <label className="text-sm font-semibold text-gray-600">Miles Per Week</label>
               <motion.span
                 className="text-lg font-mono font-bold"
                 style={{ color: accent }}
@@ -58,7 +58,7 @@ export function RateCalculator({ avgRate, accent }: RateCalculatorProps) {
                 backgroundSize: `${((milesPerWeek - 500) / (8000 - 500)) * 100}% 100%`,
               }}
             />
-            <div className="flex justify-between text-xs text-slate-500 mt-2">
+            <div className="flex justify-between text-xs text-gray-500 mt-2">
               <span>500 mi</span>
               <span>8,000 mi</span>
             </div>
@@ -67,7 +67,7 @@ export function RateCalculator({ avgRate, accent }: RateCalculatorProps) {
           {/* Target RPM */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-semibold text-slate-300">Target $/Mile (RPM)</label>
+              <label className="text-sm font-semibold text-gray-600">Target $/Mile (RPM)</label>
               <motion.span
                 className="text-lg font-mono font-bold"
                 style={{ color: accent }}
@@ -91,7 +91,7 @@ export function RateCalculator({ avgRate, accent }: RateCalculatorProps) {
                 backgroundSize: `${((targetRpm - 150) / (700 - 150)) * 100}% 100%`,
               }}
             />
-            <div className="flex justify-between text-xs text-slate-500 mt-2">
+            <div className="flex justify-between text-xs text-gray-500 mt-2">
               <span>$1.50</span>
               <span>$7.00</span>
             </div>
@@ -107,7 +107,7 @@ export function RateCalculator({ avgRate, accent }: RateCalculatorProps) {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <h3 className="text-sm uppercase tracking-widest text-slate-400 mb-6">
+          <h3 className="text-sm uppercase tracking-widest text-gray-600 mb-6">
             Estimated Weekly Earnings
           </h3>
 
@@ -118,7 +118,7 @@ export function RateCalculator({ avgRate, accent }: RateCalculatorProps) {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
           >
-            <p className="text-slate-400 text-sm mb-2">Per Week</p>
+            <p className="text-gray-600 text-sm mb-2">Per Week</p>
             <div
               className="text-5xl font-bold font-mono"
               style={{ color: accent }}
@@ -134,7 +134,7 @@ export function RateCalculator({ avgRate, accent }: RateCalculatorProps) {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.05 }}
           >
-            <p className="text-slate-400 text-sm mb-2">Per Month (avg)</p>
+            <p className="text-gray-600 text-sm mb-2">Per Month (avg)</p>
             <div
               className="text-3xl font-bold font-mono"
               style={{ color: accent }}
@@ -144,7 +144,7 @@ export function RateCalculator({ avgRate, accent }: RateCalculatorProps) {
           </motion.div>
 
           {/* Disclaimer */}
-          <p className="text-xs text-slate-500 mt-8 pt-6 border-t border-white/10">
+          <p className="text-xs text-gray-500 mt-8 pt-6 border-t border-gray-200">
             Estimates based on average rates. Actual earnings vary by load type, season, and fuel costs. Does not include operational expenses.
           </p>
         </motion.div>

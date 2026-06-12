@@ -21,16 +21,16 @@ export default function ResultsPage() {
   const filteredWins = wins.filter((win) => selectedFilter === 'All' || win.truck === selectedFilter)
 
   return (
-    <main className="bg-midnight">
+    <main className="bg-gray-50">
       {/* Hero */}
-      <section className="pt-36 pb-20 px-4 bg-gradient-to-b from-midnight-light to-midnight">
+      <section className="pt-36 pb-20 px-4 bg-gradient-to-b from-white to-gray-50">
         <motion.div
           className="container mx-auto text-center max-w-2xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <h1 className="text-5xl md:text-6xl font-clash font-bold mb-4">Real Loads. Real Money.</h1>
-          <p className="text-lg text-slate-400">
+          <p className="text-lg text-gray-600">
             See the loads our carriers are getting and the rates they're earning, updated in real-time.
           </p>
         </motion.div>
@@ -40,7 +40,7 @@ export default function ResultsPage() {
       <TestimonialsCarousel />
 
       {/* Wins Board */}
-      <section className="py-24 px-4 border-y border-white/5">
+      <section className="py-24 px-4 border-y border-gray-200">
         <div className="container mx-auto">
           <motion.div
             className="text-center mb-12"
@@ -49,7 +49,7 @@ export default function ResultsPage() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl font-clash font-bold mb-4">Recent Loads</h2>
-            <p className="text-slate-400">Loads dispatched in the last 7 days</p>
+            <p className="text-gray-600">Loads dispatched in the last 7 days</p>
           </motion.div>
 
           {/* Filters */}
@@ -60,7 +60,7 @@ export default function ResultsPage() {
                 onClick={() => setSelectedFilter(filter)}
                 className="px-4 py-2 rounded-lg border-2 transition-all text-sm font-semibold"
                 animate={{
-                  borderColor: selectedFilter === filter ? '#FF8A00' : 'rgba(255,255,255,0.1)',
+                  borderColor: selectedFilter === filter ? '#FF8A00' : 'rgba(0,0,0,0.12)',
                   backgroundColor: selectedFilter === filter ? 'rgba(255,138,0,0.1)' : 'transparent',
                 }}
               >
@@ -82,41 +82,41 @@ export default function ResultsPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ delay: idx * 0.05 }}
-                className="glass rounded-lg p-4 border border-white/10 hover:border-amber/50 transition cursor-pointer group"
+                className="glass rounded-lg p-4 border border-gray-200 hover:border-amber/50 transition cursor-pointer group"
                 whileHover={{ borderColor: '#FF8A00', scale: 1.02 }}
               >
                 <div className="space-y-3">
                   {/* Lane */}
                   <div>
-                    <p className="text-xs text-slate-500 uppercase">Lane</p>
+                    <p className="text-xs text-gray-500 uppercase">Lane</p>
                     <p className="font-bold text-lg">{win.lane}</p>
                   </div>
 
                   {/* Rate & RPM */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <p className="text-xs text-slate-500">Rate</p>
+                      <p className="text-xs text-gray-500">Rate</p>
                       <p className="font-bold text-amber">{win.rate}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500">RPM</p>
+                      <p className="text-xs text-gray-500">RPM</p>
                       <p className="font-bold text-amber">{win.rpM}</p>
                     </div>
                   </div>
 
                   {/* Truck Type */}
-                  <div className="pt-2 border-t border-white/10">
-                    <p className="text-xs text-slate-400">{win.truck} Truck</p>
+                  <div className="pt-2 border-t border-gray-200">
+                    <p className="text-xs text-gray-600">{win.truck} Truck</p>
                   </div>
 
                   {/* Revenue & Time */}
-                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/10">
+                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-200">
                     <div>
-                      <p className="text-xs text-slate-500">Gross</p>
+                      <p className="text-xs text-gray-500">Gross</p>
                       <p className="font-bold text-cyan">{win.revenue}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500">Time</p>
+                      <p className="text-xs text-gray-500">Time</p>
                       <p className="font-bold text-cyan">{win.days}</p>
                     </div>
                   </div>
@@ -135,7 +135,7 @@ export default function ResultsPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 bg-gradient-to-b from-midnight to-midnight-light text-center">
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white text-center">
         <motion.div
           className="container mx-auto max-w-2xl"
           initial={{ opacity: 0, y: 20 }}

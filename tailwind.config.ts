@@ -9,6 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        ink: '#202A36',
+        'ink-dark': '#1A2229',
         midnight: '#0A0C10',
         'midnight-light': '#1A1D24',
         'midnight-lighter': '#2A2E38',
@@ -20,7 +22,7 @@ const config: Config = {
         'cyan-light': '#67E8F9',
       },
       fontFamily: {
-        clash: ['var(--font-clash)', 'sans-serif'],
+        clash: ['var(--font-inter)', 'sans-serif'],
         inter: ['var(--font-inter)', 'sans-serif'],
         mono: ['var(--font-jetbrains)', 'monospace'],
       },

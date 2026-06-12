@@ -27,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${grotesk.variable} ${mono.variable} bg-midnight text-white antialiased`}>
+      <body className={`${inter.variable} ${grotesk.variable} ${mono.variable} bg-gray-50 text-gray-900 antialiased`}>
         <Providers>
           <Navbar />
           {children}

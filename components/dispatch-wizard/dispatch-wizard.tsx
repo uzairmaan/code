@@ -75,7 +75,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                   onClick={() => setValue('truckType', truck as any)}
                   className="p-4 rounded-lg border-2 transition-all text-left"
                   animate={{
-                    borderColor: formData.truckType === truck ? '#FF8A00' : 'rgba(255,255,255,0.1)',
+                    borderColor: formData.truckType === truck ? '#FF8A00' : 'rgba(0,0,0,0.12)',
                     backgroundColor: formData.truckType === truck ? 'rgba(255,138,0,0.05)' : 'transparent',
                   }}
                 >
@@ -97,7 +97,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                 <input
                   {...register('mcNumber')}
                   placeholder="e.g., MC123456"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:border-amber focus:outline-none"
+                  className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-900 placeholder-gray-400 focus:border-amber focus:outline-none"
                 />
                 {errors.mcNumber && <p className="text-amber text-sm mt-1">{errors.mcNumber.message}</p>}
               </div>
@@ -107,7 +107,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                 <input
                   {...register('dotNumber')}
                   placeholder="e.g., DOT123456"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:border-amber focus:outline-none"
+                  className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-900 placeholder-gray-400 focus:border-amber focus:outline-none"
                 />
                 {errors.dotNumber && <p className="text-amber text-sm mt-1">{errors.dotNumber.message}</p>}
               </div>
@@ -117,7 +117,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                 <input
                   type="number"
                   {...register('yearsInOperation', { valueAsNumber: true })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:border-amber focus:outline-none"
+                  className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-900 placeholder-gray-400 focus:border-amber focus:outline-none"
                 />
               </div>
 
@@ -130,7 +130,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                       onClick={() => setValue('operationType', type as any)}
                       className="flex-1 p-3 rounded-lg border-2 transition-all text-sm"
                       style={{
-                        borderColor: formData.operationType === type ? '#FF8A00' : 'rgba(255,255,255,0.1)',
+                        borderColor: formData.operationType === type ? '#FF8A00' : 'rgba(0,0,0,0.12)',
                         backgroundColor: formData.operationType === type ? 'rgba(255,138,0,0.05)' : 'transparent',
                       }}
                     >
@@ -164,7 +164,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                       className="p-3 rounded-lg border-2 transition-all text-sm"
                       style={{
                         borderColor:
-                          formData.trailerTypes?.includes(trailer) ? '#FF8A00' : 'rgba(255,255,255,0.1)',
+                          formData.trailerTypes?.includes(trailer) ? '#FF8A00' : 'rgba(0,0,0,0.12)',
                         backgroundColor: formData.trailerTypes?.includes(trailer) ? 'rgba(255,138,0,0.05)' : 'transparent',
                       }}
                     >
@@ -191,7 +191,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                       className="p-3 rounded-lg border-2 transition-all text-sm"
                       style={{
                         borderColor:
-                          formData.preferredRegions?.includes(region) ? '#FF8A00' : 'rgba(255,255,255,0.1)',
+                          formData.preferredRegions?.includes(region) ? '#FF8A00' : 'rgba(0,0,0,0.12)',
                         backgroundColor: formData.preferredRegions?.includes(region) ? 'rgba(255,138,0,0.05)' : 'transparent',
                       }}
                     >
@@ -232,7 +232,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                       onClick={() => setValue('homeTimePreference', pref as any)}
                       className="p-3 rounded-lg border-2 transition-all capitalize"
                       style={{
-                        borderColor: formData.homeTimePreference === pref ? '#FF8A00' : 'rgba(255,255,255,0.1)',
+                        borderColor: formData.homeTimePreference === pref ? '#FF8A00' : 'rgba(0,0,0,0.12)',
                         backgroundColor: formData.homeTimePreference === pref ? 'rgba(255,138,0,0.05)' : 'transparent',
                       }}
                     >
@@ -254,7 +254,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                 <label className="block text-sm font-semibold mb-2">Name</label>
                 <input
                   {...register('name')}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                  className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                 />
                 {errors.name && <p className="text-amber text-sm mt-1">{errors.name.message}</p>}
               </div>
@@ -264,7 +264,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                 <input
                   {...register('phone')}
                   placeholder="1234567890"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                  className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                 />
                 {errors.phone && <p className="text-amber text-sm mt-1">{errors.phone.message}</p>}
               </div>
@@ -274,7 +274,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                 <input
                   type="email"
                   {...register('email')}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                  className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                 />
                 {errors.email && <p className="text-amber text-sm mt-1">{errors.email.message}</p>}
               </div>
@@ -283,7 +283,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
                 <label className="block text-sm font-semibold mb-2">Company Name (optional)</label>
                 <input
                   {...register('companyName')}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                  className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                 />
               </div>
             </div>
@@ -305,7 +305,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
               <motion.div
                 className="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 border-2"
                 animate={{
-                  borderColor: currentStep >= step.number ? '#FF8A00' : 'rgba(255,255,255,0.1)',
+                  borderColor: currentStep >= step.number ? '#FF8A00' : 'rgba(0,0,0,0.12)',
                   backgroundColor: currentStep >= step.number ? 'rgba(255,138,0,0.1)' : 'transparent',
                 }}
               >
@@ -317,7 +317,7 @@ export function DispatchWizard({ onSuccess }: DispatchWizardProps) {
         </div>
 
         {/* Progress Line */}
-        <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+        <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-gradient-to-r from-amber to-amber-light rounded-full"
             animate={{ width: `${(currentStep / steps.length) * 100}%` }}

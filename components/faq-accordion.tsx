@@ -27,15 +27,15 @@ export function FAQAccordion({ items, accent }: FAQAccordionProps) {
       {items.map((item, idx) => (
         <motion.div
           key={idx}
-          className="border border-white/10 rounded-lg overflow-hidden transition-all duration-300 hover:border-white/20"
+          className="border border-gray-200 rounded-lg overflow-hidden transition-all duration-300 hover:border-gray-300"
           animate={{
-            borderColor: openIndex === idx ? `${accent}4D` : 'rgba(255,255,255,0.1)',
+            borderColor: openIndex === idx ? `${accent}4D` : 'rgba(0,0,0,0.12)',
           }}
         >
           {/* Question Button */}
           <button
             onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-            className="w-full px-6 py-4 text-left font-semibold text-slate-100 hover:bg-white/5 transition-colors flex items-center justify-between group"
+            className="w-full px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50 transition-colors flex items-center justify-between group"
           >
             <span className="text-base">{item.question}</span>
             <motion.svg
@@ -62,7 +62,7 @@ export function FAQAccordion({ items, accent }: FAQAccordionProps) {
                 className="overflow-hidden"
               >
                 <div
-                  className="px-6 py-4 border-t text-sm text-slate-300 leading-relaxed"
+                  className="px-6 py-4 border-t text-sm text-gray-600 leading-relaxed"
                   style={{ borderColor: `${accent}33` }}
                 >
                   {item.answer}

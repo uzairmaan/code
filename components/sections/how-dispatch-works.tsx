@@ -53,18 +53,18 @@ export function HowDispatchWorks() {
   const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1])
 
   return (
-    <section className="relative overflow-hidden bg-midnight px-4 py-28 lg:px-8" id="how-it-works">
+    <section className="relative overflow-hidden bg-gray-50 px-4 py-28 lg:px-8" id="how-it-works">
       <div className="container mx-auto" ref={ref}>
         <ScrollReveal className="mb-16 max-w-2xl">
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-amber">The process</p>
           <h2 className="mt-3 font-clash text-4xl font-bold md:text-5xl">
-            From signup to settled, <span className="text-slate-500">in four moves.</span>
+            From signup to settled, <span className="text-gray-500">in four moves.</span>
           </h2>
         </ScrollReveal>
 
         <div className="relative">
           {/* Scroll-drawn connecting line (desktop) */}
-          <div className="absolute left-0 right-0 top-7 hidden h-px bg-white/10 lg:block">
+          <div className="absolute left-0 right-0 top-7 hidden h-px bg-gray-200 lg:block">
             <motion.div className="h-full origin-left bg-gradient-to-r from-amber to-cyan" style={{ scaleX: lineScale }} />
           </div>
 
@@ -73,13 +73,13 @@ export function HowDispatchWorks() {
               <ScrollReveal key={step.number} delay={idx * 0.12}>
                 <motion.div className="group relative" whileHover={{ y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 22 }}>
                   {/* Node */}
-                  <div className="relative z-10 mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-amber/30 bg-midnight-light text-amber transition-colors group-hover:border-amber group-hover:bg-amber/10">
+                  <div className="relative z-10 mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-amber/30 bg-gray-100 text-amber transition-colors group-hover:border-amber group-hover:bg-amber/10">
                     {step.icon}
                   </div>
 
-                  <span className="font-mono text-xs text-slate-600">{step.number}</span>
+                  <span className="font-mono text-xs text-gray-400">{step.number}</span>
                   <h3 className="mt-1 font-clash text-xl font-bold">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-400">{step.description}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-600">{step.description}</p>
                 </motion.div>
               </ScrollReveal>
             ))}

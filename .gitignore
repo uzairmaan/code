@@ -12,3 +12,4 @@ build/
 .cache/
 out/
 /out
+tsconfig.tsbuildinfo

@@ -44,7 +44,7 @@ export function Step1TruckSelection({ selected, setValue }: Step1Props) {
     >
       <div>
         <h2 className="text-3xl font-clash font-bold mb-2">Choose Your Truck</h2>
-        <p className="text-slate-400">What type of hauling are you doing?</p>
+        <p className="text-gray-600">What type of hauling are you doing?</p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
@@ -54,7 +54,7 @@ export function Step1TruckSelection({ selected, setValue }: Step1Props) {
             onClick={() => setValue('truckType', truck.id as any)}
             className="p-6 rounded-xl border-2 transition-all text-left group"
             animate={{
-              borderColor: selected === truck.id ? '#FF8A00' : 'rgba(255,255,255,0.1)',
+              borderColor: selected === truck.id ? '#FF8A00' : 'rgba(0,0,0,0.12)',
               backgroundColor: selected === truck.id ? 'rgba(255,138,0,0.05)' : 'transparent',
             }}
             whileHover={{ scale: 1.02 }}
@@ -62,7 +62,7 @@ export function Step1TruckSelection({ selected, setValue }: Step1Props) {
           >
             <div className="text-4xl mb-3">{truck.icon}</div>
             <h3 className="font-bold text-lg mb-1">{truck.name}</h3>
-            <p className="text-sm text-slate-400 mb-3">{truck.subtitle}</p>
+            <p className="text-sm text-gray-600 mb-3">{truck.subtitle}</p>
             <p className="text-sm font-mono text-amber">{truck.rateRange}</p>
 
             {selected === truck.id && (

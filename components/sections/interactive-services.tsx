@@ -52,14 +52,14 @@ export function InteractiveServices() {
   const [spot, setSpot] = useState({ x: 50, y: 50 })
 
   return (
-    <section className="relative overflow-hidden bg-midnight px-4 py-28 lg:px-8" id="services">
+    <section className="relative overflow-hidden bg-gray-50 px-4 py-28 lg:px-8" id="services">
       <div className="container mx-auto">
         <ScrollReveal className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.3em] text-amber">What we dispatch</p>
             <h2 className="mt-3 font-clash text-4xl font-bold md:text-5xl">Pick your lane.</h2>
           </div>
-          <p className="max-w-sm text-sm leading-relaxed text-slate-400">
+          <p className="max-w-sm text-sm leading-relaxed text-gray-600">
             Three fleets, one promise: your truck never sits. Dedicated dispatcher, no forced loads, flat percentage.
           </p>
         </ScrollReveal>
@@ -69,8 +69,8 @@ export function InteractiveServices() {
             <ScrollReveal key={service.id} delay={idx * 0.1}>
               <Link href={`/services/${service.id}`} data-cursor="hover" className="block h-full">
                 <motion.article
-                  className="group relative flex h-full min-h-[22rem] flex-col overflow-hidden rounded-2xl border bg-gradient-to-b from-white/[0.04] to-transparent p-8"
-                  style={{ borderColor: hoveredId === service.id ? service.color : 'rgba(255,255,255,0.08)' }}
+                  className="group relative flex h-full min-h-[22rem] flex-col overflow-hidden rounded-2xl border bg-white shadow-sm p-8"
+                  style={{ borderColor: hoveredId === service.id ? service.color : 'rgba(0,0,0,0.08)' }}
                   onMouseEnter={() => setHoveredId(service.id)}
                   onMouseLeave={() => setHoveredId(null)}
                   onMouseMove={(e) => {
@@ -93,20 +93,20 @@ export function InteractiveServices() {
                   <div style={{ color: service.color }}>{service.icon}</div>
 
                   <h3 className="mt-6 font-clash text-2xl font-bold">{service.name}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-400">{service.description}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-gray-600">{service.description}</p>
 
                   <div className="mt-auto flex items-end justify-between pt-8">
                     <div>
                       <p className="font-mono text-2xl font-bold" style={{ color: service.color }}>
                         {service.rate}
                       </p>
-                      <p className="mt-1 text-xs text-slate-500">{service.rateLabel}</p>
+                      <p className="mt-1 text-xs text-gray-500">{service.rateLabel}</p>
                     </div>
                     <motion.span
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-slate-300 transition-colors group-hover:border-transparent"
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-600 transition-colors group-hover:border-transparent"
                       animate={{
-                        backgroundColor: hoveredId === service.id ? service.color : 'rgba(255,255,255,0)',
-                        color: hoveredId === service.id ? '#0A0C10' : '#cbd5e1',
+                        backgroundColor: hoveredId === service.id ? service.color : 'rgba(255,255,255,0.6)',
+                        color: hoveredId === service.id ? '#ffffff' : '#475569',
                         rotate: hoveredId === service.id ? -45 : 0,
                       }}
                     >

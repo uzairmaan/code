@@ -25,7 +25,7 @@ export function ContactSection() {
   }
 
   return (
-    <section className="py-24 px-4 bg-midnight">
+    <section className="py-24 px-4 bg-gray-50">
       <div className="container mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -35,7 +35,7 @@ export function ContactSection() {
           className="text-center mb-16"
         >
           <h2 className="text-5xl font-clash font-bold mb-4">Get in Touch</h2>
-          <p className="text-lg text-slate-400">Our dispatch team is available 24/7 to answer your questions.</p>
+          <p className="text-lg text-gray-600">Our dispatch team is available 24/7 to answer your questions.</p>
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">
@@ -54,7 +54,7 @@ export function ContactSection() {
                 type="text"
                 value={formState.name}
                 onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:border-amber focus:outline-none transition"
+                className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-amber focus:outline-none transition"
                 placeholder="Your name"
                 required
               />
@@ -66,7 +66,7 @@ export function ContactSection() {
                 type="email"
                 value={formState.email}
                 onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:border-amber focus:outline-none transition"
+                className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-amber focus:outline-none transition"
                 placeholder="your@email.com"
                 required
               />
@@ -78,7 +78,7 @@ export function ContactSection() {
                 value={formState.message}
                 onChange={(e) => setFormState({ ...formState, message: e.target.value })}
                 rows={5}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:border-amber focus:outline-none transition resize-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-amber focus:outline-none transition resize-none"
                 placeholder="How can we help?"
                 required
               />
@@ -105,23 +105,23 @@ export function ContactSection() {
           >
             {/* Info Cards */}
             {[
-              { label: '📞 Call', value: '+1 (800) 555-1234', href: 'tel:+18005551234' },
-              { label: '📧 Email', value: 'dispatch@freightflow.com', href: 'mailto:dispatch@freightflow.com' },
-              { label: '🕐 Hours', value: '24/7 Dispatch Available', href: null },
+              { label: 'Call', value: '+1 (800) 555-1234', href: 'tel:+18005551234' },
+              { label: 'Email', value: 'dispatch@freightflow.com', href: 'mailto:dispatch@freightflow.com' },
+              { label: 'Hours', value: '24/7 Dispatch Available', href: null },
             ].map((item, idx) => (
               <motion.div
                 key={idx}
-                className="glass rounded-lg p-6 border border-white/10 hover:border-amber/50 transition cursor-pointer"
+                className="glass rounded-lg p-6 border border-gray-200 hover:border-amber/50 transition cursor-pointer"
                 whileHover={{ borderColor: '#FF8A00' }}
                 onClick={() => item.href && window.open(item.href)}
               >
-                <p className="text-sm text-slate-400 mb-2">{item.label}</p>
+                <p className="text-sm text-gray-600 mb-2">{item.label}</p>
                 <p className="text-lg font-bold text-amber">{item.value}</p>
               </motion.div>
             ))}
 
             {/* Radar visual */}
-            <div className="glass rounded-lg p-8 border border-white/10 flex items-center justify-center h-64">
+            <div className="glass rounded-lg p-8 border border-gray-200 flex items-center justify-center h-64">
               <motion.div
                 className="relative w-32 h-32"
                 animate={{ rotate: 360 }}

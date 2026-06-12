@@ -33,9 +33,9 @@ export function ServicePage({ service }: ServicePageProps) {
   }
 
   return (
-    <main className="bg-midnight">
+    <main className="bg-gray-50">
       {/* Hero Section */}
-      <section className="pt-36 pb-20 px-4 bg-gradient-to-b from-midnight-light to-midnight relative overflow-hidden">
+      <section className="pt-36 pb-20 px-4 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div
             className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10"
@@ -63,7 +63,7 @@ export function ServicePage({ service }: ServicePageProps) {
 
           <motion.p
             variants={itemVariants}
-            className="text-xl text-slate-300 max-w-2xl mt-8 leading-relaxed"
+            className="text-xl text-gray-600 max-w-2xl mt-8 leading-relaxed"
           >
             {service.description}
           </motion.p>
@@ -76,7 +76,7 @@ export function ServicePage({ service }: ServicePageProps) {
               { label: 'Service Area', value: service.specs.lanes, color: service.accent },
             ].map((stat, idx) => (
               <div key={idx} className="glass rounded-lg p-4 border" style={{ borderColor: `${service.accent}33` }}>
-                <p className="text-xs uppercase tracking-widest text-slate-400 mb-2">{stat.label}</p>
+                <p className="text-xs uppercase tracking-widest text-gray-600 mb-2">{stat.label}</p>
                 <p className="font-bold" style={{ color: stat.color }}>
                   {stat.value}
                 </p>
@@ -87,7 +87,7 @@ export function ServicePage({ service }: ServicePageProps) {
       </section>
 
       {/* Specs Section */}
-      <section className="py-24 px-4 border-y border-white/5">
+      <section className="py-24 px-4 border-y border-gray-200">
         <motion.div
           className="container mx-auto"
           variants={containerVariants}
@@ -108,7 +108,7 @@ export function ServicePage({ service }: ServicePageProps) {
       </section>
 
       {/* Rate Calculator Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-midnight to-midnight-light">
+      <section className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white">
         <motion.div
           className="container mx-auto max-w-4xl"
           variants={containerVariants}
@@ -119,7 +119,7 @@ export function ServicePage({ service }: ServicePageProps) {
           <motion.h2 variants={itemVariants} className="text-4xl font-clash font-bold mb-4">
             Earnings Calculator
           </motion.h2>
-          <motion.p variants={itemVariants} className="text-lg text-slate-400 mb-12">
+          <motion.p variants={itemVariants} className="text-lg text-gray-600 mb-12">
             See what you could earn with FreightFlow
           </motion.p>
 
@@ -128,7 +128,7 @@ export function ServicePage({ service }: ServicePageProps) {
       </section>
 
       {/* What We Handle Section */}
-      <section className="py-24 px-4 border-y border-white/5">
+      <section className="py-24 px-4 border-y border-gray-200">
         <motion.div
           className="container mx-auto"
           variants={containerVariants}
@@ -144,11 +144,11 @@ export function ServicePage({ service }: ServicePageProps) {
             {service.freightTypes.map((type, idx) => (
               <motion.div
                 key={idx}
-                className="glass rounded-lg p-4 text-center border transition-all hover:border-white/20"
+                className="glass rounded-lg p-4 text-center border transition-all hover:border-gray-300"
                 style={{ borderColor: `${service.accent}33` }}
                 whileHover={{ scale: 1.05, borderColor: service.accent }}
               >
-                <p className="text-sm font-semibold text-slate-200">{type}</p>
+                <p className="text-sm font-semibold text-gray-700">{type}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -156,7 +156,7 @@ export function ServicePage({ service }: ServicePageProps) {
       </section>
 
       {/* Comparison Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-midnight to-midnight-light">
+      <section className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white">
         <motion.div
           className="container mx-auto max-w-5xl"
           variants={containerVariants}
@@ -167,7 +167,7 @@ export function ServicePage({ service }: ServicePageProps) {
           <motion.h2 variants={itemVariants} className="text-4xl font-clash font-bold mb-4">
             With vs. Without
           </motion.h2>
-          <motion.p variants={itemVariants} className="text-lg text-slate-400 mb-12">
+          <motion.p variants={itemVariants} className="text-lg text-gray-600 mb-12">
             Why carriers choose FreightFlow over traditional load boards
           </motion.p>
 
@@ -176,7 +176,7 @@ export function ServicePage({ service }: ServicePageProps) {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 px-4 border-y border-white/5">
+      <section className="py-24 px-4 border-y border-gray-200">
         <motion.div
           className="container mx-auto max-w-3xl"
           variants={containerVariants}
@@ -193,7 +193,7 @@ export function ServicePage({ service }: ServicePageProps) {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-midnight to-midnight-light relative overflow-hidden">
+      <section className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div
             className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-3xl opacity-10"
@@ -211,7 +211,7 @@ export function ServicePage({ service }: ServicePageProps) {
           <motion.h2 variants={itemVariants} className="text-4xl font-clash font-bold mb-6">
             Ready to Get Dispatched?
           </motion.h2>
-          <motion.p variants={itemVariants} className="text-lg text-slate-300 mb-10">
+          <motion.p variants={itemVariants} className="text-lg text-gray-600 mb-10">
             Join {service.name === 'Semi-Trucks' ? '1,200+' : '800+'} carriers earning premium rates with FreightFlow.
           </motion.p>
 
@@ -223,7 +223,7 @@ export function ServicePage({ service }: ServicePageProps) {
 
       {/* Mobile Sticky Dock */}
       <motion.div
-        className="fixed bottom-0 left-0 right-0 md:hidden bg-gradient-to-t from-midnight via-midnight to-transparent p-4 border-t border-white/10 z-40"
+        className="fixed bottom-0 left-0 right-0 md:hidden bg-gradient-to-t from-gray-50 via-gray-50 to-transparent p-4 border-t border-gray-200 z-40"
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         transition={{ delay: 1, type: 'spring', stiffness: 100, damping: 20 }}

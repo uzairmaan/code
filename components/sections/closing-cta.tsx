@@ -7,7 +7,7 @@ import { MagneticButton } from '@/components/ui/magnetic-button'
 
 export function ClosingCTA() {
   return (
-    <section className="py-32 px-4 bg-gradient-to-b from-midnight to-midnight-light relative overflow-hidden">
+    <section className="py-32 px-4 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
       {/* Animated background elements */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
@@ -35,7 +35,7 @@ export function ClosingCTA() {
             <span className="text-amber">Start Hauling.</span>
           </h2>
 
-          <p className="text-xl text-slate-300 mb-10 leading-relaxed">
+          <p className="text-xl text-gray-600 mb-10 leading-relaxed">
             Join 2,400+ professional carriers. Better loads. Better rates. Better life.
           </p>
 
@@ -53,7 +53,7 @@ export function ClosingCTA() {
           </motion.div>
 
           {/* Subtext */}
-          <p className="text-sm text-slate-500 mt-8">
+          <p className="text-sm text-gray-500 mt-8">
             No credit card required • 5 min signup • Live dispatch available today
           </p>
         </motion.div>

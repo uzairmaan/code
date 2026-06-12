@@ -9,8 +9,8 @@ export function LogoMarquee() {
   const row = [...partners, ...partners]
 
   return (
-    <section className="border-y border-white/5 bg-midnight py-12 overflow-hidden">
-      <p className="mb-8 text-center font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
+    <section className="border-y border-gray-200 bg-gray-50 py-12 overflow-hidden">
+      <p className="mb-8 text-center font-mono text-xs uppercase tracking-[0.3em] text-gray-500">
         Sourcing loads across every major board
       </p>
 
@@ -26,7 +26,7 @@ export function LogoMarquee() {
           {row.map((name, idx) => (
             <span
               key={idx}
-              className="whitespace-nowrap font-clash text-xl font-semibold text-slate-600 transition-colors hover:text-slate-300"
+              className="whitespace-nowrap font-clash text-xl font-semibold text-gray-400 transition-colors hover:text-gray-600"
             >
               {name}
             </span>
