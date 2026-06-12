@@ -1,44 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@font-face {
-  font-family: 'Clash Display';
-  src: url('/fonts/ClashDisplay-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-:root {
-  --accent-amber: #FF8A00;
-  --accent-cyan: #22D3EE;
-  --accent-red: #EF4444;
-  --base-midnight: #0A0C10;
-  --base-light: #1A1D24;
-  --text-primary: #FFFFFF;
-  --text-secondary: #D1D5DB;
-}
-
 * {
-  @apply box-border;
+  box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
-  @apply antialiased;
 }
 
 body {
-  @apply bg-midnight text-white overflow-x-hidden;
+  background-color: #0A0C10;
+  color: #FFFFFF;
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Reduced motion support */
@@ -58,16 +32,23 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-midnight-light;
+  background: #1A1D24;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-midnight-lighter rounded cursor-pointer hover:bg-slate-600;
+  background: #2A2E38;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #505560;
 }
 
 /* Focus visible for accessibility */
 :focus-visible {
-  @apply outline-none ring-2 ring-amber ring-offset-2 ring-offset-midnight;
+  outline: none;
+  box-shadow: 0 0 0 2px #0A0C10, 0 0 0 4px #FF8A00;
 }
 
 /* Lane dash pattern for hero */
@@ -87,10 +68,13 @@ body {
 
 /* Glassmorphism */
 .glass {
-  @apply bg-white/5 backdrop-blur-md border border-white/10;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Magnetic button styles */
 .magnetic-button {
-  @apply relative inline-block;
+  position: relative;
+  display: inline-block;
 }
