@@ -19,7 +19,7 @@ import Link from 'next/link'
  */
 
 const FRAME_COUNT = 140
-const SCROLL_VH = 420
+const SCROLL_VH = 280
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 const framePath = (i: number) => `${BASE}/frames/hero/frame_${String(i).padStart(4, '0')}.jpg`
 const POSTER = `${BASE}/hero-cinematic.jpg`

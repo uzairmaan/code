@@ -62,14 +62,15 @@ static `HeroVideo`.
   semi on a sea of clouds, warm amber headlights. Job `de741aed-7b2a-4f77-916e-0db769ac7e8b`
   (2nd candidate `19596f6c-0639-4be8-922c-8cf8e574f92f`).
 - **Frames:** `scripts/gen-hero-frames.py` (Pillow+numpy) renders the keyframe into
-  **140 JPGs** at `public/frames/hero/frame_0001…0140.jpg` (~15 MB) — an eased dolly
-  push-in with pulsing headlight glow, soft vignette, film grain. Poster:
+  **140 JPGs** at `public/frames/hero/frame_0001…0140.jpg`, 2048×1152 q92 (~48 MB) —
+  an easeOut dolly push-in (zoom 1.06→1.34, responsive from the first scroll) with
+  pulsing headlight glow, soft vignette, film grain. Poster:
   `public/hero-cinematic.jpg`. Re-run: `python3 scripts/gen-hero-frames.py`.
 - **Component:** `components/sections/hero-cinematic.tsx` — sticky 420vh stage, HiDPI
   cover-fit canvas, continuous rAF scrub (robust to the app's Lenis), four crossfading
   copy beats + final CTA, progress bar, scroll hint, and a `prefers-reduced-motion`
-  static-poster fallback. Light theme (NOT the skill's dark demo styling). Wired into
-  `app/page.tsx`. (`hero-video.tsx` is kept but no longer imported.)
+  static-poster fallback. Sticky **280vh** stage (snappy). Light theme (NOT the skill's
+  dark demo styling). Wired into `app/page.tsx`. (`hero-video.tsx` kept, not imported.)
 - **Verified:** `npm run build` and `GITHUB_PAGES=true npm run build` both pass;
   Playwright confirmed the canvas paints, frames advance on scroll, and all four copy
   beats crossfade (screenshots at p=0 / 0.32 / 0.62 / 0.95).
@@ -86,8 +87,8 @@ Account is **free tier, ~6 credits left** (started at 10; spent 2×2 cr on image
    rebuild. The engine is unchanged — it's a pure frames-folder swap.
 2. Optional **second scrub section** deeper in the page (e.g. a 360° turntable for
    "Pick Your Lane"); the engine handles multiple sections.
-3. **Mobile perf:** ~15 MB of frames preloads on mount — consider a smaller mobile
-   frame set or deferring the preload until the hero is near the viewport.
+3. **Mobile perf:** quality-first frames are ~48 MB and preload on mount — serve a
+   smaller/fewer-frame mobile set, or defer the preload until the hero is near view.
 
 ### Environment caveats (fresh container resets these)
 - Re-install if you need them: Playwright browser
