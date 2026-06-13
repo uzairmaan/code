@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://freightflow.com
+Sitemap: https://freightflow.com/sitemap.xml
