@@ -80,8 +80,24 @@ static `HeroVideo`.
   Playwright confirmed the canvas paints, frames advance on scroll, and all four copy
   beats crossfade (screenshots at p=0 / 0.32 / 0.62 / 0.95).
 
+## Round 2 — service imagery, mobile hero, SEO/GEO (2026-06-13)
+- **Service-page imagery:** replaced the SVG truck diagram with real Higgsfield photos
+  per service — `public/services/{semis,box-trucks,hotshots}.jpg` (semi reuses keyframe
+  `19596f6c`; box truck `022a86ca`; hotshot `80eaf07e`). `service-page.tsx` rewritten:
+  full-bleed photo hero + clean spec grid (no more broken diagram).
+- **Mobile hero:** `hero-cinematic.tsx` now biases the canvas crop toward the truck on
+  portrait (focus 0.6) and adds mobile-only crossfading copy beats (`MOBILE_BEATS`,
+  `md:hidden`) since the part-anchored callouts are desktop-only. Closing CTA is no longer
+  a 2nd `<h1>` (single H1 for SEO).
+- **SEO/GEO:** `lib/site.ts` (site config + Organization/ProfessionalService + WebSite
+  JSON-LD), `components/json-ld.tsx`, `app/sitemap.ts`, `app/robots.ts`. Rich metadata in
+  `app/layout.tsx` (metadataBase, title template, OG/Twitter, canonical, robots). Client
+  pages get metadata via `app/results/layout.tsx` + `app/dispatch/layout.tsx`. Service
+  routes emit Service + FAQPage + BreadcrumbList JSON-LD and per-service OG. Set the real
+  domain via `NEXT_PUBLIC_SITE_URL` (defaults to `https://freightflow.com`).
+
 ### ⚠️ Higgsfield credits — the live constraint
-Account is **free tier, ~6 credits left** (started at 10; spent 2×2 cr on images).
+Account is **free tier, ~2 credits left** (10 → 4 on hero candidates → 4 on box+hotshot).
 **Video is out of budget:** Seedance 1080p = 45 cr, 720p ≈ 23 cr, even Grok 480p/4 s =
 10 cr. That's why the hero motion is a *code-generated* push-in, not a true Higgsfield
 3D clip. Image gen is cheap (2 cr @ 2k), so keyframes are fine.

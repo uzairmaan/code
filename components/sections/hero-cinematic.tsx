@@ -53,6 +53,13 @@ const CALLOUTS = [
 const SAFE_TOP = 120
 const SAFE_BOTTOM = 110
 
+// Mobile-only centered beats — desktop uses the part-anchored callouts, which
+// don't translate to a portrait crop, so phones get a clean kinetic narrative.
+const MOBILE_BEATS = [
+  { text: 'We find the loads.\nYou drive the miles.', in: 0.2, out: 0.5 },
+  { text: '1,200+ loads booked.\n98% on-time.', in: 0.5, out: 0.78 },
+]
+
 export function HeroCinematic() {
   const sectionRef = useRef<HTMLElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -61,6 +68,7 @@ export function HeroCinematic() {
   const calloutRefs = useRef<(HTMLDivElement | null)[]>([])
   const leaderRefs = useRef<(HTMLSpanElement | null)[]>([])
   const labelRefs = useRef<(HTMLDivElement | null)[]>([])
+  const mobileBeatRefs = useRef<(HTMLDivElement | null)[]>([])
   const fillRef = useRef<HTMLDivElement>(null)
   const hintRef = useRef<HTMLDivElement>(null)
   const [reduced, setReduced] = useState(false)
@@ -91,8 +99,15 @@ export function HeroCinematic() {
       const cw = canvas!.clientWidth, ch = canvas!.clientHeight
       const ir = img.naturalWidth / img.naturalHeight, cr = cw / ch
       let dw: number, dh: number, dx: number, dy: number
-      if (ir > cr) { dh = ch; dw = ch * ir; dx = (cw - dw) / 2; dy = 0 }
-      else { dw = cw; dh = cw / ir; dx = 0; dy = (ch - dh) / 2 }
+      if (ir > cr) {
+        dh = ch; dw = ch * ir
+        // On portrait (mobile) the 16:9 frame is wider than the viewport; bias the
+        // crop toward the truck (right-of-center) instead of centering on empty sky.
+        const focus = cr < 1 ? 0.6 : 0.5
+        dx = Math.min(0, Math.max(cw - dw, cw / 2 - focus * dw)); dy = 0
+      } else {
+        dw = cw; dh = cw / ir; dx = 0; dy = (ch - dh) / 2
+      }
       ctx!.fillStyle = '#e9edf2'
       ctx!.fillRect(0, 0, cw, ch)
       ctx!.drawImage(img, dx, dy, dw, dh)
@@ -130,6 +145,14 @@ export function HeroCinematic() {
         ctaRef.current.style.transform = `translateY(${(1 - o) * 22}px)`
         ctaRef.current.style.pointerEvents = o > 0.6 ? 'auto' : 'none'
       }
+
+      // Mobile-only crossfading beats.
+      mobileBeatRefs.current.forEach((el, i) => {
+        if (!el) return
+        const o = band(p, MOBILE_BEATS[i].in, MOBILE_BEATS[i].out)
+        el.style.opacity = String(o)
+        el.style.transform = `translateY(${(1 - o) * 22}px)`
+      })
 
       // Part-anchored callouts: replicate the generator's crop transform to map
       // each source point to the current frame, then cover-fit it to the canvas.
@@ -253,12 +276,23 @@ export function HeroCinematic() {
 
           <div ref={ctaRef} className="absolute max-w-xl px-8 md:px-[8vw]" style={{ left: 0, opacity: 0, willChange: 'opacity, transform' }}>
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-gray-600">Stop searching</p>
-            <h1 className="text-5xl font-semibold leading-[0.95] tracking-tight text-ink md:text-7xl" style={{ textShadow: '0 2px 40px rgba(255,255,255,0.85)' }}>Start hauling.</h1>
+            <div className="text-5xl font-semibold leading-[0.95] tracking-tight text-ink md:text-7xl" style={{ textShadow: '0 2px 40px rgba(255,255,255,0.85)' }}>Start hauling.</div>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link href="/dispatch" className="rounded-full bg-ink px-6 py-3 font-medium text-white transition-colors hover:bg-ink-dark">Get Dispatched</Link>
               <a href="#services" className="rounded-full bg-white/80 px-6 py-3 font-medium text-gray-800 backdrop-blur-sm transition-colors hover:bg-white">See Our Rates</a>
             </div>
           </div>
+        </div>
+
+        {/* Mobile-only centered beats (desktop uses the tracked callouts) */}
+        <div className="pointer-events-none absolute inset-0 md:hidden">
+          {MOBILE_BEATS.map((b, i) => (
+            <div key={i} className="absolute inset-x-7 top-1/2 -translate-y-1/2">
+              <div ref={(el) => { mobileBeatRefs.current[i] = el }} style={{ opacity: 0, willChange: 'opacity, transform' }}>
+                <h2 className="whitespace-pre-line text-3xl font-semibold leading-[1.1] tracking-tight text-ink" style={{ textShadow: '0 2px 30px rgba(255,255,255,0.92)' }}>{b.text}</h2>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Scroll progress + hint */}
