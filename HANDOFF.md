@@ -16,8 +16,9 @@ landing-page aesthetic.
 
 - **Stack:** Next.js 15 (App Router) · React 19 · TypeScript · Tailwind v3 ·
   Framer Motion · GSAP/ScrollTrigger · Three.js · Lenis smooth scroll.
-- **Branch:** `claude/freightflow-dispatch-design-5029yx`
-- **PR:** #1 (draft) — https://github.com/uzairmaan/code/pull/1
+- **Branch:** active work on `claude/trusting-fermi-r5eh6n` (continuation of
+  `claude/freightflow-dispatch-design-5029yx`; both shared HEAD at session start).
+- **PR:** #1 (draft) — https://github.com/uzairmaan/code/pull/1 (older branch)
 - **Deploy:** Vercel preview (auto on push) + GitHub Pages static export
   (`GITHUB_PAGES=true npm run build` → `/out`, served under `/code`).
 - **Commands:** `npm run dev` · `npm run build` · `npm run type-check`.
@@ -45,31 +46,48 @@ landing-page aesthetic.
   milky gray-white range.
 - (Removed: `hero-truck.mp4`, `hero-truck-poster.jpg`.)
 
-## The pending task (why the new session exists)
+## Status — scroll-cinematic hero (updated 2026-06-13)
 
-Build a **3D scroll-cinematic, multi-section site** for FreightFlow:
+**Done this session (branch `claude/trusting-fermi-r5eh6n`):** the homepage hero is
+now a **scroll-cinematic canvas frame-scrub** (Apple/Awwwards style), replacing the
+static `HeroVideo`.
 
-- Use the **`scroll-cinematic` skill** (uploaded to the account; should be
-  available in a fresh session — verify it appears in the skills list).
-- Use the **Higgsfield MCP** (added as a connector; verify its tools are
-  searchable via ToolSearch, e.g. query "higgsfield video") to generate a
-  **high-end cinematic clip + two 3D clips at 1080p**.
-- **Slice the clips into scroll frames** and drive them on scroll (canvas
-  frame-scrub, Apple-style), wired into a polished, branded, multi-section
-  layout that matches the existing FreightFlow look.
+- **Tooling fixed permanently:** the `scroll-cinematic` skill is now committed in-repo
+  at `.claude/skills/scroll-cinematic/` (the user uploaded it as a zip — web sessions
+  don't hot-reload skills, but keeping it in git means every future session has it on
+  disk; just `Read` the `SKILL.md` and follow it). The Higgsfield MCP connector is
+  live and working. NOTE: the skill's `ensure-ffmpeg.sh` is stale (download URL 404s);
+  ffmpeg here came from `apt-get install -y ffmpeg`.
+- **Hero keyframe:** Higgsfield `nano_banana_pro` (2k, 16:9) — a glossy-black sleeper
+  semi on a sea of clouds, warm amber headlights. Job `de741aed-7b2a-4f77-916e-0db769ac7e8b`
+  (2nd candidate `19596f6c-0639-4be8-922c-8cf8e574f92f`).
+- **Frames:** `scripts/gen-hero-frames.py` (Pillow+numpy) renders the keyframe into
+  **140 JPGs** at `public/frames/hero/frame_0001…0140.jpg` (~15 MB) — an eased dolly
+  push-in with pulsing headlight glow, soft vignette, film grain. Poster:
+  `public/hero-cinematic.jpg`. Re-run: `python3 scripts/gen-hero-frames.py`.
+- **Component:** `components/sections/hero-cinematic.tsx` — sticky 420vh stage, HiDPI
+  cover-fit canvas, continuous rAF scrub (robust to the app's Lenis), four crossfading
+  copy beats + final CTA, progress bar, scroll hint, and a `prefers-reduced-motion`
+  static-poster fallback. Light theme (NOT the skill's dark demo styling). Wired into
+  `app/page.tsx`. (`hero-video.tsx` is kept but no longer imported.)
+- **Verified:** `npm run build` and `GITHUB_PAGES=true npm run build` both pass;
+  Playwright confirmed the canvas paints, frames advance on scroll, and all four copy
+  beats crossfade (screenshots at p=0 / 0.32 / 0.62 / 0.95).
 
-### Why it couldn't be done in the previous session
-That container was created **before** the skill and connector were added in the
-web dashboard. Web sessions load skills + MCP connectors **once at startup** and
-don't hot-reload — so they were absent. A fresh environment fixes this.
+### ⚠️ Higgsfield credits — the live constraint
+Account is **free tier, ~6 credits left** (started at 10; spent 2×2 cr on images).
+**Video is out of budget:** Seedance 1080p = 45 cr, 720p ≈ 23 cr, even Grok 480p/4 s =
+10 cr. That's why the hero motion is a *code-generated* push-in, not a true Higgsfield
+3D clip. Image gen is cheap (2 cr @ 2k), so keyframes are fine.
 
-### First steps for the new session
-1. Confirm tooling is actually present: check the skills list for
-   `scroll-cinematic`, and run `ToolSearch` for "higgsfield". If either is still
-   missing, the connector/skill didn't propagate — tell the user before proceeding.
-2. Skim `FREIGHTFLOW_PROJECT_PLAN.md` and the current homepage sections in
-   `components/sections/` to match branding.
-3. Generate the clips, slice to frames, build the scroll experience.
+### Next steps (priority order)
+1. **Top up credits → real 3D clip.** Generate a `seedance_2_0` 1080p clip from the
+   keyframe id, then `scripts/extract-frames.sh clip.mp4 public/frames/hero 140` and
+   rebuild. The engine is unchanged — it's a pure frames-folder swap.
+2. Optional **second scrub section** deeper in the page (e.g. a 360° turntable for
+   "Pick Your Lane"); the engine handles multiple sections.
+3. **Mobile perf:** ~15 MB of frames preloads on mount — consider a smaller mobile
+   frame set or deferring the preload until the hero is near the viewport.
 
 ### Environment caveats (fresh container resets these)
 - Re-install if you need them: Playwright browser
@@ -78,5 +96,7 @@ don't hot-reload — so they were absent. A fresh environment fixes this.
 - Anything in git (the branch, `public/` assets, these docs) **is** persisted.
 
 ## Verified working
-- `npm run build` passes (all 10 routes prerender).
-- Latest Vercel deploy of the current hero is "Ready."
+- `npm run build` and `GITHUB_PAGES=true npm run build` both pass (all 10 routes
+  prerender; frames export to `out/frames/hero/`).
+- Scroll-cinematic hero verified via Playwright (canvas paints, frames scrub on
+  scroll, copy beats crossfade). Confirm the final look on the deployed preview.
