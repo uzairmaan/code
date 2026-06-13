@@ -49,6 +49,9 @@ const CALLOUTS = [
   { sx: 0.560, sy: 0.400, kicker: 'Hands-off', label: 'You just drive', dx: -195, dy: -70, in: 0.37, out: 0.63 },
   { sx: 0.612, sy: 0.800, kicker: 'Proven', label: '1,200+ loads booked', dx: -160, dy: 40, in: 0.56, out: 0.82 },
 ]
+// Keep callout labels clear of the fixed navbar (top) and progress bar (bottom).
+const SAFE_TOP = 120
+const SAFE_BOTTOM = 110
 
 export function HeroCinematic() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -56,6 +59,8 @@ export function HeroCinematic() {
   const headlineRef = useRef<HTMLDivElement>(null)
   const ctaRef = useRef<HTMLDivElement>(null)
   const calloutRefs = useRef<(HTMLDivElement | null)[]>([])
+  const leaderRefs = useRef<(HTMLSpanElement | null)[]>([])
+  const labelRefs = useRef<(HTMLDivElement | null)[]>([])
   const fillRef = useRef<HTMLDivElement>(null)
   const hintRef = useRef<HTMLDivElement>(null)
   const [reduced, setReduced] = useState(false)
@@ -148,9 +153,24 @@ export function HeroCinematic() {
         const oy = (c.sy * SRC_H - top) / ch
         const x = fdx + ox * fdw
         const y = fdy + oy * fdh
-        const o = band(p, c.in, c.out)
         el.style.transform = `translate(${x}px, ${y}px)`
-        el.style.opacity = String(o)
+        el.style.opacity = String(band(p, c.in, c.out))
+
+        // Clamp the label into the safe band; the dot stays pinned to the part
+        // and the leader line stretches/rotates to follow.
+        const lx = c.dx
+        let ly = c.dy
+        const lo = SAFE_TOP - y
+        const hi = vh - SAFE_BOTTOM - y
+        if (ly < lo) ly = lo
+        if (hi > lo && ly > hi) ly = hi
+        const lbl = labelRefs.current[i]
+        const ldr = leaderRefs.current[i]
+        if (lbl) lbl.style.transform = `translate(${lx}px, ${ly}px)`
+        if (ldr) {
+          ldr.style.width = `${Math.hypot(lx, ly)}px`
+          ldr.style.transform = `rotate(${Math.atan2(ly, lx)}rad)`
+        }
       })
 
       if (fillRef.current) fillRef.current.style.width = `${p * 100}%`
@@ -201,30 +221,26 @@ export function HeroCinematic() {
 
         {/* Part-anchored callouts (tracked to the truck) */}
         <div className="pointer-events-none absolute inset-0 hidden md:block">
-          {CALLOUTS.map((c, i) => {
-            const len = Math.hypot(c.dx, c.dy)
-            const ang = Math.atan2(c.dy, c.dx)
-            return (
-              <div
-                key={i}
-                ref={(el) => { calloutRefs.current[i] = el }}
-                className="absolute left-0 top-0"
-                style={{ opacity: 0, willChange: 'transform, opacity' }}
-              >
-                {/* anchor dot on the part */}
-                <span className="absolute -ml-[5px] -mt-[5px] block h-[10px] w-[10px] rounded-full bg-amber" style={{ boxShadow: '0 0 0 4px rgba(255,138,0,0.25), 0 0 14px rgba(255,138,0,0.7)' }} />
-                {/* leader line from dot toward the label */}
-                <span className="absolute left-0 top-0 h-px origin-left bg-ink/45" style={{ width: len, transform: `rotate(${ang}rad)` }} />
-                {/* label, right-aligned to the offset point */}
-                <div className="absolute left-0 top-0" style={{ transform: `translate(${c.dx}px, ${c.dy}px)` }}>
-                  <div style={{ transform: 'translate(-100%, -50%)' }}>
-                    <div className="whitespace-nowrap text-right text-xs font-semibold uppercase tracking-[0.3em] text-amber-dark" style={{ textShadow: '0 1px 12px rgba(255,255,255,0.9)' }}>{c.kicker}</div>
-                    <div className="whitespace-nowrap text-right text-2xl font-semibold tracking-tight text-ink md:text-3xl" style={{ textShadow: '0 1px 18px rgba(255,255,255,0.95)' }}>{c.label}</div>
-                  </div>
+          {CALLOUTS.map((c, i) => (
+            <div
+              key={i}
+              ref={(el) => { calloutRefs.current[i] = el }}
+              className="absolute left-0 top-0"
+              style={{ opacity: 0, willChange: 'transform, opacity' }}
+            >
+              {/* anchor dot on the part */}
+              <span className="absolute -ml-[5px] -mt-[5px] block h-[10px] w-[10px] rounded-full bg-amber" style={{ boxShadow: '0 0 0 4px rgba(255,138,0,0.22), 0 0 12px rgba(255,138,0,0.6)' }} />
+              {/* leader line — width/rotation set per frame to follow the clamped label */}
+              <span ref={(el) => { leaderRefs.current[i] = el }} className="absolute left-0 top-0 h-px origin-left bg-ink/40" />
+              {/* label — translate set per frame; inner div right-aligns + vertically centers it */}
+              <div ref={(el) => { labelRefs.current[i] = el }} className="absolute left-0 top-0">
+                <div style={{ transform: 'translate(-100%, -50%)' }}>
+                  <div className="whitespace-nowrap text-right text-xs font-semibold uppercase tracking-[0.3em] text-amber-dark" style={{ textShadow: '0 1px 12px rgba(255,255,255,0.9)' }}>{c.kicker}</div>
+                  <div className="whitespace-nowrap text-right text-2xl font-semibold tracking-tight text-ink md:text-3xl" style={{ textShadow: '0 1px 18px rgba(255,255,255,0.95)' }}>{c.label}</div>
                 </div>
               </div>
-            )
-          })}
+            </div>
+          ))}
         </div>
 
         {/* Fixed beats: opening headline + closing CTA */}

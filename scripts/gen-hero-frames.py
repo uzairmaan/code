@@ -37,12 +37,12 @@ WARM = np.array([255.0, 174.0, 70.0])    # headlight color (additive)
 
 # Amber light sources in normalized SOURCE coords: (x, y, sigma_px, weight)
 LIGHTS = [
-    (0.400, 0.710, 60, 1.00),     # left headlight (tight = crisp lamp)
-    (0.515, 0.720, 60, 1.00),     # right headlight
-    (0.458, 0.800, 140, 0.34),    # restrained forward glow on the clouds
-    (0.500, 0.340, 15, 0.26),     # cab-roof marker lights
-    (0.553, 0.340, 15, 0.26),
-    (0.606, 0.345, 15, 0.26),
+    (0.400, 0.710, 88, 0.74),     # left headlight — soft, warm bloom (not a hard core)
+    (0.515, 0.720, 88, 0.74),     # right headlight
+    (0.458, 0.800, 170, 0.42),    # soft forward glow spilling onto the clouds
+    (0.500, 0.340, 14, 0.22),     # cab-roof marker lights
+    (0.553, 0.340, 14, 0.22),
+    (0.606, 0.345, 14, 0.22),
 ]
 
 
@@ -80,7 +80,7 @@ def main():
         zoom = ZOOM_START + (ZOOM_END - ZOOM_START) * e
 
         # Pulsing, gently intensifying-on-approach glow (classy, not flashy).
-        pulse = (0.86 + 0.14 * np.sin(2 * np.pi * 1.5 * t)) * (1.0 + 0.40 * e)
+        pulse = (0.86 + 0.14 * np.sin(2 * np.pi * 1.5 * t)) * (1.0 + 0.24 * e)
         frame_full = np.clip(src + glow[:, :, None] * WARM[None, None, :] * pulse, 0, 255)
 
         # Crop window (output aspect), centered between image-center and the focal point.
