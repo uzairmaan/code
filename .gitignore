@@ -12,3 +12,7 @@ build/
 .cache/
 out/
 /out
+tsconfig.tsbuildinfo
+
+# Local-only Claude Code settings (keep .claude/skills tracked)
+.claude/settings.local.json

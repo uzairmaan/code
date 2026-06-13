@@ -44,10 +44,10 @@ export function ComparisonReveal({ points, accent }: ComparisonRevealProps) {
       viewport={{ once: true }}
     >
       {/* Table */}
-      <div className="bg-gradient-to-b from-slate-900/20 to-transparent rounded-xl border border-white/5 overflow-hidden">
+      <div className="bg-gradient-to-b from-gray-100 to-transparent rounded-xl border border-gray-200 overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-3 gap-4 p-6 border-b border-white/10 bg-gradient-to-r from-white/5 to-transparent">
-          <motion.div variants={itemVariants} className="text-xs uppercase tracking-widest text-slate-400 font-semibold">
+        <div className="grid grid-cols-3 gap-4 p-6 border-b border-gray-200 bg-gradient-to-r from-white/5 to-transparent">
+          <motion.div variants={itemVariants} className="text-xs uppercase tracking-widest text-gray-600 font-semibold">
             Feature
           </motion.div>
           <motion.div
@@ -57,7 +57,7 @@ export function ComparisonReveal({ points, accent }: ComparisonRevealProps) {
           >
             ✓ With FreightFlow
           </motion.div>
-          <motion.div variants={itemVariants} className="text-xs uppercase tracking-widest text-slate-500">
+          <motion.div variants={itemVariants} className="text-xs uppercase tracking-widest text-gray-500">
             Without
           </motion.div>
         </div>
@@ -65,12 +65,12 @@ export function ComparisonReveal({ points, accent }: ComparisonRevealProps) {
         {/* Rows */}
         <div className="divide-y divide-white/5">
           {points.map((point, idx) => (
-            <motion.div key={idx} variants={itemVariants} className="grid grid-cols-3 gap-4 p-6 hover:bg-white/[0.02] transition-colors">
+            <motion.div key={idx} variants={itemVariants} className="grid grid-cols-3 gap-4 p-6 hover:bg-gray-50 transition-colors">
               {/* Feature */}
-              <div className="font-semibold text-slate-200">{point.feature}</div>
+              <div className="font-semibold text-gray-700">{point.feature}</div>
 
               {/* With FreightFlow */}
-              <div className="text-sm text-slate-300 flex items-start gap-2">
+              <div className="text-sm text-gray-600 flex items-start gap-2">
                 <span className="text-lg flex-shrink-0" style={{ color: accent }}>
                   ✓
                 </span>
@@ -78,7 +78,7 @@ export function ComparisonReveal({ points, accent }: ComparisonRevealProps) {
               </div>
 
               {/* Without */}
-              <div className="text-sm text-slate-500 flex items-start gap-2">
+              <div className="text-sm text-gray-500 flex items-start gap-2">
                 <span className="text-lg flex-shrink-0 opacity-30">×</span>
                 <span className="opacity-70">{point.without}</span>
               </div>

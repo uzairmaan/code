@@ -25,7 +25,7 @@ const columns = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-white/5 bg-midnight overflow-hidden">
+    <footer className="relative border-t border-gray-200 bg-gray-50 overflow-hidden">
       {/* Glow accent */}
       <div className="pointer-events-none absolute -top-32 left-1/2 h-64 w-[60rem] -translate-x-1/2 rounded-full bg-amber/5 blur-3xl" />
 
@@ -36,11 +36,11 @@ export function Footer() {
             <Link href="/" className="font-clash text-2xl font-bold tracking-tight">
               Freight<span className="text-amber">Flow</span>
             </Link>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-400">
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-gray-600">
               Premium dispatch for owner-operators and small fleets. We hunt the loads, negotiate the rates, and handle
               the paperwork — you drive and get paid.
             </p>
-            <div className="mt-6 flex items-center gap-3 font-mono text-xs text-slate-500">
+            <div className="mt-6 flex items-center gap-3 font-mono text-xs text-gray-500">
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               Dispatchers online 24/7
             </div>
@@ -48,14 +48,14 @@ export function Footer() {
 
           {columns.map((col) => (
             <div key={col.title}>
-              <h4 className="text-xs font-semibold uppercase tracking-widest text-slate-500">{col.title}</h4>
+              <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-500">{col.title}</h4>
               <ul className="mt-4 space-y-3">
                 {col.links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
                       data-cursor="hover"
-                      className="text-sm text-slate-300 transition-colors hover:text-amber"
+                      className="text-sm text-gray-600 transition-colors hover:text-amber"
                     >
                       {link.label}
                     </Link>
@@ -67,7 +67,7 @@ export function Footer() {
         </div>
 
         {/* Animated divider road */}
-        <div className="relative mt-14 mb-8 h-px w-full bg-white/10 overflow-hidden">
+        <div className="relative mt-14 mb-8 h-px w-full bg-gray-200 overflow-hidden">
           <motion.div
             className="absolute top-0 h-px w-24 bg-gradient-to-r from-transparent via-amber to-transparent"
             animate={{ x: ['-10%', '110%'] }}
@@ -76,7 +76,7 @@ export function Footer() {
           />
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-4 text-xs text-slate-500 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 text-xs text-gray-500 md:flex-row">
           <p>© {new Date().getFullYear()} FreightFlow LLC. All rights reserved.</p>
           <p className="font-mono">MC-compliant · No forced dispatch · Cancel anytime</p>
         </div>

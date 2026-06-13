@@ -54,12 +54,12 @@ export function CustomCursor() {
         style={{ x: ringX, y: ringY, translateX: '-50%', translateY: '-50%' }}
       >
         <motion.div
-          className="rounded-full border border-amber/70"
+          className="rounded-full border border-gray-900/50"
           animate={{
             width: hovering ? 52 : 34,
             height: hovering ? 52 : 34,
             opacity: pressed ? 0.5 : 1,
-            backgroundColor: hovering ? 'rgba(255,138,0,0.08)' : 'rgba(255,138,0,0)',
+            backgroundColor: hovering ? 'rgba(32,42,54,0.06)' : 'rgba(32,42,54,0)',
           }}
           transition={{ duration: 0.2 }}
         />
@@ -71,7 +71,7 @@ export function CustomCursor() {
         style={{ x, y, translateX: '-50%', translateY: '-50%' }}
       >
         <motion.div
-          className="rounded-full bg-amber"
+          className="rounded-full bg-gray-900"
           animate={{ width: pressed ? 5 : 7, height: pressed ? 5 : 7 }}
           transition={{ duration: 0.15 }}
         />

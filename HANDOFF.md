@@ -1,0 +1,124 @@
+# Session Handoff — FreightFlow
+
+> Purpose: let a **fresh Claude Code (web) session** continue this work without the
+> previous chat history. The old session ran in an ephemeral container whose
+> transcript is gone; everything that matters is captured here + in git.
+>
+> **To resume:** start a new web session on branch
+> `claude/freightflow-dispatch-design-5029yx` and say:
+> _"Read HANDOFF.md and continue."_
+
+## What this project is
+
+FreightFlow — a premium marketing site for a truck-dispatching business
+(semi-trucks, box trucks, hotshots). Adapted from the "SkyElite" private-jet
+landing-page aesthetic.
+
+- **Stack:** Next.js 15 (App Router) · React 19 · TypeScript · Tailwind v3 ·
+  Framer Motion · GSAP/ScrollTrigger · Three.js · Lenis smooth scroll.
+- **Branch:** active work on `claude/trusting-fermi-r5eh6n` (continuation of
+  `claude/freightflow-dispatch-design-5029yx`; both shared HEAD at session start).
+- **PR:** #1 (draft) — https://github.com/uzairmaan/code/pull/1 (older branch)
+- **Deploy:** Vercel preview (auto on push) + GitHub Pages static export
+  (`GITHUB_PAGES=true npm run build` → `/out`, served under `/code`).
+- **Commands:** `npm run dev` · `npm run build` · `npm run type-check`.
+
+## Design decisions that are settled (do not re-litigate)
+
+1. **Light theme is the keeper.** We tried reverting to the dark "midnight"
+   theme; the user rejected it. Keep the light premium look (gray-50 surfaces,
+   white cards, `#202A36` ink CTAs, Inter type, pill buttons).
+2. **Hero = composited still, not video.** The `.mp4` truck video was removed.
+   Current hero (`components/sections/hero-video.tsx`) layers a recolored
+   glossy-black truck over a desaturated cloudscape with animated amber
+   headlight glows + a slide-in/float entrance — deliberately matching the
+   jet hero's vibe (black aircraft on bright clouds, warm engine glow).
+3. **Aesthetic target:** clean, high-end, "luxury," jet-like. The user iterates
+   fast and judges by looking at the deployed preview, so ship something
+   viewable each round and screenshot-verify before claiming it works.
+
+## Current hero assets (committed, in `public/`)
+
+- `hero-truck-black.webp` (41 KB) — glossy-black truck cutout, cool tint.
+  Made from a Pexels photo via `rembg` background removal + a PIL recolor
+  (gamma curve to crush midtones, slight blue tint). `.png` fallback alongside.
+- `hero-clouds.jpg` (96 KB) — Pexels sky, fully desaturated and lifted into a
+  milky gray-white range.
+- (Removed: `hero-truck.mp4`, `hero-truck-poster.jpg`.)
+
+## Status — scroll-cinematic hero (updated 2026-06-13)
+
+**Done this session (branch `claude/trusting-fermi-r5eh6n`):** the homepage hero is
+now a **scroll-cinematic canvas frame-scrub** (Apple/Awwwards style), replacing the
+static `HeroVideo`.
+
+- **Tooling fixed permanently:** the `scroll-cinematic` skill is now committed in-repo
+  at `.claude/skills/scroll-cinematic/` (the user uploaded it as a zip — web sessions
+  don't hot-reload skills, but keeping it in git means every future session has it on
+  disk; just `Read` the `SKILL.md` and follow it). The Higgsfield MCP connector is
+  live and working. NOTE: the skill's `ensure-ffmpeg.sh` is stale (download URL 404s);
+  ffmpeg here came from `apt-get install -y ffmpeg`.
+- **Hero keyframe:** Higgsfield `nano_banana_pro` (2k, 16:9) — a glossy-black sleeper
+  semi on a sea of clouds, warm amber headlights. Job `de741aed-7b2a-4f77-916e-0db769ac7e8b`
+  (2nd candidate `19596f6c-0639-4be8-922c-8cf8e574f92f`).
+- **Frames:** `scripts/gen-hero-frames.py` (Pillow+numpy) renders the keyframe into
+  **140 JPGs** at `public/frames/hero/frame_0001…0140.jpg`, 2048×1152 q92 (~48 MB) —
+  an easeOut dolly push-in (zoom 1.06→1.34, responsive from the first scroll) with
+  pulsing headlight glow, soft vignette, film grain. Poster:
+  `public/hero-cinematic.jpg`. Re-run: `python3 scripts/gen-hero-frames.py`.
+- **Component:** `components/sections/hero-cinematic.tsx` — sticky **300vh** stage, HiDPI
+  cover-fit canvas, continuous rAF scrub (robust to the app's Lenis). Overlay = an
+  opening headline + closing CTA (fixed, left-aligned) PLUS three **part-anchored
+  callouts** (headlights / cab / wheels) that reveal on scroll and TRACK their part as
+  the frame zooms — the generator's push-in transform is mirrored in JS (the SRC_W/
+  ZOOM_*/FOCAL_* constants must match `gen-hero-frames.py`) to map a source point to
+  screen. Progress bar, scroll hint, `prefers-reduced-motion` poster fallback. The rAF
+  loop retries painting the current frame until its image decodes, and a poster sits
+  behind the canvas, so the hero never flashes black while 48 MB of frames load. Callouts
+  are desktop-only (`md:` and up). Light theme. Wired into `app/page.tsx`.
+- **Verified:** `npm run build` and `GITHUB_PAGES=true npm run build` both pass;
+  Playwright confirmed the canvas paints, frames advance on scroll, and all four copy
+  beats crossfade (screenshots at p=0 / 0.32 / 0.62 / 0.95).
+
+## Round 2 — service imagery, mobile hero, SEO/GEO (2026-06-13)
+- **Service-page imagery:** replaced the SVG truck diagram with real Higgsfield photos
+  per service — `public/services/{semis,box-trucks,hotshots}.jpg` (semi reuses keyframe
+  `19596f6c`; box truck `022a86ca`; hotshot `80eaf07e`). `service-page.tsx` rewritten:
+  full-bleed photo hero + clean spec grid (no more broken diagram).
+- **Mobile hero:** `hero-cinematic.tsx` now biases the canvas crop toward the truck on
+  portrait (focus 0.6) and adds mobile-only crossfading copy beats (`MOBILE_BEATS`,
+  `md:hidden`) since the part-anchored callouts are desktop-only. Closing CTA is no longer
+  a 2nd `<h1>` (single H1 for SEO).
+- **SEO/GEO:** `lib/site.ts` (site config + Organization/ProfessionalService + WebSite
+  JSON-LD), `components/json-ld.tsx`, `app/sitemap.ts`, `app/robots.ts`. Rich metadata in
+  `app/layout.tsx` (metadataBase, title template, OG/Twitter, canonical, robots). Client
+  pages get metadata via `app/results/layout.tsx` + `app/dispatch/layout.tsx`. Service
+  routes emit Service + FAQPage + BreadcrumbList JSON-LD and per-service OG. Set the real
+  domain via `NEXT_PUBLIC_SITE_URL` (defaults to `https://freightflow.com`).
+
+### ⚠️ Higgsfield credits — the live constraint
+Account is **free tier, ~2 credits left** (10 → 4 on hero candidates → 4 on box+hotshot).
+**Video is out of budget:** Seedance 1080p = 45 cr, 720p ≈ 23 cr, even Grok 480p/4 s =
+10 cr. That's why the hero motion is a *code-generated* push-in, not a true Higgsfield
+3D clip. Image gen is cheap (2 cr @ 2k), so keyframes are fine.
+
+### Next steps (priority order)
+1. **Top up credits → real 3D clip.** Generate a `seedance_2_0` 1080p clip from the
+   keyframe id, then `scripts/extract-frames.sh clip.mp4 public/frames/hero 140` and
+   rebuild. The engine is unchanged — it's a pure frames-folder swap.
+2. Optional **second scrub section** deeper in the page (e.g. a 360° turntable for
+   "Pick Your Lane"); the engine handles multiple sections.
+3. **Mobile perf:** quality-first frames are ~48 MB and preload on mount — serve a
+   smaller/fewer-frame mobile set, or defer the preload until the hero is near view.
+
+### Environment caveats (fresh container resets these)
+- Re-install if you need them: Playwright browser
+  (`npx playwright install chromium`), and `pip install pillow rembg onnxruntime`
+  for any image work. These are NOT persisted across sessions.
+- Anything in git (the branch, `public/` assets, these docs) **is** persisted.
+
+## Verified working
+- `npm run build` and `GITHUB_PAGES=true npm run build` both pass (all 10 routes
+  prerender; frames export to `out/frames/hero/`).
+- Scroll-cinematic hero verified via Playwright (canvas paints, frames scrub on
+  scroll, copy beats crossfade). Confirm the final look on the deployed preview.

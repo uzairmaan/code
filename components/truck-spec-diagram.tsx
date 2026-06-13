@@ -100,7 +100,7 @@ export function TruckSpecDiagram({ hotspots, accent, truckType }: TruckSpecDiagr
       transition={{ duration: 0.6 }}
     >
       {/* Diagram Container */}
-      <div className="relative bg-gradient-to-b from-slate-900/30 to-transparent rounded-xl border border-white/5 p-12 overflow-hidden">
+      <div className="relative bg-gradient-to-b from-gray-100 to-transparent rounded-xl border border-gray-200 p-12 overflow-hidden">
         {/* Truck SVG */}
         <div className="relative z-10">{getTruckSvg()}</div>
 
@@ -173,7 +173,7 @@ export function TruckSpecDiagram({ hotspots, accent, truckType }: TruckSpecDiagr
                 <h4 className="font-semibold mb-1" style={{ color: accent }}>
                   {hotspots[activeHotspot].label}
                 </h4>
-                <p className="text-sm text-slate-300">{hotspots[activeHotspot].description}</p>
+                <p className="text-sm text-gray-600">{hotspots[activeHotspot].description}</p>
               </div>
             </div>
           </motion.div>
@@ -181,7 +181,7 @@ export function TruckSpecDiagram({ hotspots, accent, truckType }: TruckSpecDiagr
       </AnimatePresence>
 
       {/* Instructions */}
-      <p className="text-center text-sm text-slate-400">
+      <p className="text-center text-sm text-gray-600">
         💡 Tap the colored dots on the truck to learn more about each component
       </p>
     </motion.div>

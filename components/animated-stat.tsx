@@ -53,7 +53,7 @@ export function AnimatedStat({ value, label, suffix = '', prefix = '', color = '
         </span>
       </div>
 
-      <div className="mt-4 h-px w-full overflow-hidden bg-white/10">
+      <div className="mt-4 h-px w-full overflow-hidden bg-gray-200">
         <div
           ref={barRef}
           className="h-full origin-left transition-transform duration-[1.6s] ease-out"
@@ -61,7 +61,7 @@ export function AnimatedStat({ value, label, suffix = '', prefix = '', color = '
         />
       </div>
 
-      <p className="mt-3 text-sm text-slate-400">{label}</p>
+      <p className="mt-3 text-sm text-gray-600">{label}</p>
     </div>
   )
 }

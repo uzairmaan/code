@@ -6,7 +6,7 @@ import { ScrollReveal } from '@/components/scroll-reveal'
 
 export function InteractiveStats() {
   return (
-    <section className="border-y border-white/5 bg-midnight-light/40 px-4 py-24 lg:px-8">
+    <section className="border-y border-gray-200 bg-white px-4 py-24 lg:px-8">
       <div className="container mx-auto">
         <ScrollReveal>
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-amber">By the numbers</p>
