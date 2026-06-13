@@ -5,49 +5,57 @@ import Link from 'next/link'
 
 /**
  * HeroCinematic — scroll-scrubbed canvas frame sequence (the "scroll-cinematic"
- * technique). A Higgsfield-generated hero still of a glossy-black semi on a sea
- * of clouds is rendered as a 140-frame cinematic dolly push-in; the frame painted
- * to the canvas is chosen by scroll progress, so scrolling drives the move.
+ * technique). A Higgsfield-generated still of a glossy-black semi on a sea of
+ * clouds is rendered (scripts/gen-hero-frames.py) into 140 frames of an easeOut
+ * dolly push-in; the frame painted to the canvas is chosen by scroll progress.
  *
- * Engine notes (mirrors the scroll-cinematic skill):
- *  - Preload every frame; paint frame 0 on first load; redraw only on index change.
- *  - Sticky stage: outer section is tall (SCROLL_VH); inner is position:sticky.
- *    progress = clamp(-rect.top / (rect.height - innerH), 0, 1).
- *  - Cover-fit draw + HiDPI (devicePixelRatio, capped at 2).
- *  - Driven from a continuous rAF loop (robust to the app's Lenis smooth scroll).
- *  - Respects prefers-reduced-motion: renders a static poster + copy, no pin.
+ * Overlay copy comes in two forms:
+ *  - Fixed beats (opening headline + closing CTA), left-aligned.
+ *  - Part-anchored callouts pinned to the truck (headlights / cab / wheels) that
+ *    reveal on scroll and TRACK their part as the frame zooms — the push-in
+ *    transform from the frame generator is replicated here to map a source-image
+ *    point to its on-screen position every rAF tick.
+ *
+ * Engine: preload all frames; the rAF loop keeps trying to paint the current
+ * frame until its image has actually decoded (so a slow-loading frame 0 never
+ * leaves the canvas blank); cover-fit draw + HiDPI; respects reduced motion.
  */
 
 const FRAME_COUNT = 140
-const SCROLL_VH = 280
+const SCROLL_VH = 300
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 const framePath = (i: number) => `${BASE}/frames/hero/frame_${String(i).padStart(4, '0')}.jpg`
 const POSTER = `${BASE}/hero-cinematic.jpg`
 
-// Kinetic copy that crossfades across scroll-progress bands (full opacity inside
-// the band, FADE-wide crossfades at the edges). Line 1 starts at 0 so it is fully
-// visible the moment the page loads, before any scroll.
-const FADE = 0.07
-const LINES: { text: string; sub?: string; start: number; end: number }[] = [
-  { text: 'Premium.\nDispatched.', sub: 'Your miles deserve better rates.', start: 0.0, end: 0.18 },
-  { text: 'We find the loads.\nYou drive the miles.', sub: 'Semi-trucks · box trucks · hotshots.', start: 0.26, end: 0.46 },
-  { text: '1,200+ loads booked.\n98% on-time.', sub: 'Around-the-clock dispatch, real rates.', start: 0.54, end: 0.72 },
-]
-const CTA_BAND = { start: 0.82, end: 1.0 }
+// --- Push-in transform constants — MUST mirror scripts/gen-hero-frames.py ---
+const SRC_W = 2752, SRC_H = 1536
+const OUT_AR = 2048 / 1152
+const ZOOM_START = 1.06, ZOOM_END = 1.34
+const FOCAL_X = 0.55, FOCAL_Y = 0.62
+const DRIFT = 0.7
+const MINWH = Math.min(SRC_W, SRC_H * OUT_AR)
+const easeOut = (t: number) => 1 - (1 - t) ** 3
 
+const FADE = 0.07
 function band(p: number, s: number, e: number) {
   if (p <= s) return p >= s - FADE ? (p - (s - FADE)) / FADE : 0
   if (p >= e) return p <= e + FADE ? 1 - (p - e) / FADE : 0
   return 1
 }
 
+// Callouts: anchor in normalized SOURCE-image coords; dx/dy = label offset (px).
+const CALLOUTS = [
+  { sx: 0.405, sy: 0.705, kicker: '24/7', label: 'Always-on dispatch', dx: -185, dy: 44, in: 0.18, out: 0.45 },
+  { sx: 0.560, sy: 0.400, kicker: 'Hands-off', label: 'You just drive', dx: -195, dy: -70, in: 0.37, out: 0.63 },
+  { sx: 0.612, sy: 0.800, kicker: 'Proven', label: '1,200+ loads booked', dx: -160, dy: 40, in: 0.56, out: 0.82 },
+]
+
 export function HeroCinematic() {
   const sectionRef = useRef<HTMLElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const imagesRef = useRef<HTMLImageElement[]>([])
-  const frameRef = useRef(-1)
-  const lineRefs = useRef<(HTMLDivElement | null)[]>([])
+  const headlineRef = useRef<HTMLDivElement>(null)
   const ctaRef = useRef<HTMLDivElement>(null)
+  const calloutRefs = useRef<(HTMLDivElement | null)[]>([])
   const fillRef = useRef<HTMLDivElement>(null)
   const hintRef = useRef<HTMLDivElement>(null)
   const [reduced, setReduced] = useState(false)
@@ -61,38 +69,29 @@ export function HeroCinematic() {
     const canvas = canvasRef.current
     const section = sectionRef.current
     if (!canvas || !section) return
-    const ctx = canvas.getContext('2d', { alpha: false })
+    const ctx = canvas.getContext('2d') // alpha:true → poster shows through until first paint
     if (!ctx) return
 
-    // Preload every frame; paint the first as soon as it decodes.
     const images: HTMLImageElement[] = []
-    let firstDrawn = false
     for (let i = 0; i < FRAME_COUNT; i++) {
       const img = new Image()
       img.src = framePath(i + 1)
-      img.onload = () => {
-        if (!firstDrawn) {
-          firstDrawn = true
-          draw(0)
-        }
-      }
       images[i] = img
     }
-    imagesRef.current = images
 
-    function draw(index: number) {
+    let painted = -1 // index actually drawn to the canvas (not just requested)
+    function draw(index: number): boolean {
       const img = images[index]
-      if (!img || !img.complete || !img.naturalWidth) return
-      const cw = canvas!.clientWidth
-      const ch = canvas!.clientHeight
-      const ir = img.naturalWidth / img.naturalHeight
-      const cr = cw / ch
+      if (!img || !img.complete || !img.naturalWidth) return false
+      const cw = canvas!.clientWidth, ch = canvas!.clientHeight
+      const ir = img.naturalWidth / img.naturalHeight, cr = cw / ch
       let dw: number, dh: number, dx: number, dy: number
       if (ir > cr) { dh = ch; dw = ch * ir; dx = (cw - dw) / 2; dy = 0 }
       else { dw = cw; dh = cw / ir; dx = 0; dy = (ch - dh) / 2 }
       ctx!.fillStyle = '#e9edf2'
       ctx!.fillRect(0, 0, cw, ch)
       ctx!.drawImage(img, dx, dy, dw, dh)
+      return true
     }
 
     function resize() {
@@ -100,7 +99,7 @@ export function HeroCinematic() {
       canvas!.width = canvas!.clientWidth * dpr
       canvas!.height = canvas!.clientHeight * dpr
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0)
-      draw(frameRef.current < 0 ? 0 : frameRef.current)
+      painted = -1 // force a repaint at the new size
     }
 
     let raf = 0
@@ -109,24 +108,50 @@ export function HeroCinematic() {
       const scrollable = rect.height - window.innerHeight
       const p = scrollable > 0 ? Math.min(Math.max(-rect.top / scrollable, 0), 1) : 0
 
+      // Paint the scroll-mapped frame; if it hasn't decoded yet, keep the last
+      // good frame and retry next tick (so frame 0 paints the instant it loads).
       const idx = Math.min(FRAME_COUNT - 1, Math.floor(p * (FRAME_COUNT - 1)))
-      if (idx !== frameRef.current) { frameRef.current = idx; draw(idx) }
+      if (idx !== painted) { if (draw(idx)) painted = idx }
 
-      // Crossfade kinetic copy lines over their bands.
-      lineRefs.current.forEach((el, i) => {
-        if (!el) return
-        const o = band(p, LINES[i].start, LINES[i].end)
-        el.style.opacity = String(o)
-        el.style.transform = `translateY(${(1 - o) * 22}px)`
-      })
-
-      // Final CTA fades/rises in near the end and stays.
+      // Fixed beats.
+      if (headlineRef.current) {
+        const o = band(p, 0, 0.16)
+        headlineRef.current.style.opacity = String(o)
+        headlineRef.current.style.transform = `translateY(${(1 - o) * 22}px)`
+      }
       if (ctaRef.current) {
-        const o = band(p, CTA_BAND.start, CTA_BAND.end)
+        const o = band(p, 0.82, 1.0)
         ctaRef.current.style.opacity = String(o)
         ctaRef.current.style.transform = `translateY(${(1 - o) * 22}px)`
         ctaRef.current.style.pointerEvents = o > 0.6 ? 'auto' : 'none'
       }
+
+      // Part-anchored callouts: replicate the generator's crop transform to map
+      // each source point to the current frame, then cover-fit it to the canvas.
+      const e = easeOut(p)
+      const zoom = ZOOM_START + (ZOOM_END - ZOOM_START) * e
+      const cw = MINWH / zoom, ch = cw / OUT_AR
+      const fx = (0.5 + (FOCAL_X - 0.5) * DRIFT * e) * SRC_W
+      const fy = (0.5 + (FOCAL_Y - 0.5) * DRIFT * e) * SRC_H
+      const left = Math.min(Math.max(fx - cw / 2, 0), SRC_W - cw)
+      const top = Math.min(Math.max(fy - ch / 2, 0), SRC_H - ch)
+      const vw = canvas!.clientWidth, vh = canvas!.clientHeight
+      const fir = OUT_AR, fcr = vw / vh
+      let fdw: number, fdh: number, fdx: number, fdy: number
+      if (fir > fcr) { fdh = vh; fdw = vh * fir; fdx = (vw - fdw) / 2; fdy = 0 }
+      else { fdw = vw; fdh = vw / fir; fdx = 0; fdy = (vh - fdh) / 2 }
+
+      calloutRefs.current.forEach((el, i) => {
+        if (!el) return
+        const c = CALLOUTS[i]
+        const ox = (c.sx * SRC_W - left) / cw
+        const oy = (c.sy * SRC_H - top) / ch
+        const x = fdx + ox * fdw
+        const y = fdy + oy * fdh
+        const o = band(p, c.in, c.out)
+        el.style.transform = `translate(${x}px, ${y}px)`
+        el.style.opacity = String(o)
+      })
 
       if (fillRef.current) fillRef.current.style.width = `${p * 100}%`
       if (hintRef.current) hintRef.current.style.opacity = p > 0.02 ? '0' : '1'
@@ -165,38 +190,57 @@ export function HeroCinematic() {
   // --- Cinematic scroll-scrub hero ---
   return (
     <section ref={sectionRef} className="relative" style={{ height: `${SCROLL_VH}vh` }}>
-      <div id="hero-stage" className="sticky top-0 h-screen w-full overflow-hidden bg-[#e9edf2]">
+      <div id="hero-stage" className="sticky top-0 h-screen w-full overflow-hidden">
+        {/* Poster behind the canvas so there is never a blank/black frame on load */}
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${POSTER})` }} />
         <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" style={{ pointerEvents: 'none' }} />
 
         {/* Soft scrims for copy legibility over the bright cloudscape */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/75 via-white/10 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/70 via-white/5 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/80 to-transparent" />
 
-        {/* Overlay copy — left-aligned in the open sky negative space */}
-        <div className="pointer-events-none absolute inset-0 flex flex-col justify-center px-8 md:px-[8vw]">
-          <div className="relative h-[300px] w-full max-w-xl md:h-[360px]">
-            {LINES.map((l, i) => (
+        {/* Part-anchored callouts (tracked to the truck) */}
+        <div className="pointer-events-none absolute inset-0 hidden md:block">
+          {CALLOUTS.map((c, i) => {
+            const len = Math.hypot(c.dx, c.dy)
+            const ang = Math.atan2(c.dy, c.dx)
+            return (
               <div
                 key={i}
-                ref={(el) => { lineRefs.current[i] = el }}
-                className="absolute top-1/2 -translate-y-1/2"
-                style={{ opacity: 0, willChange: 'opacity, transform' }}
+                ref={(el) => { calloutRefs.current[i] = el }}
+                className="absolute left-0 top-0"
+                style={{ opacity: 0, willChange: 'transform, opacity' }}
               >
-                <h1 className="whitespace-pre-line text-5xl font-semibold leading-[0.95] tracking-tight text-ink md:text-7xl" style={{ textShadow: '0 2px 40px rgba(255,255,255,0.85)' }}>
-                  {l.text}
-                </h1>
-                {l.sub && <p className="mt-5 max-w-md text-lg text-gray-600 md:text-xl" style={{ textShadow: '0 1px 20px rgba(255,255,255,0.9)' }}>{l.sub}</p>}
+                {/* anchor dot on the part */}
+                <span className="absolute -ml-[5px] -mt-[5px] block h-[10px] w-[10px] rounded-full bg-amber" style={{ boxShadow: '0 0 0 4px rgba(255,138,0,0.25), 0 0 14px rgba(255,138,0,0.7)' }} />
+                {/* leader line from dot toward the label */}
+                <span className="absolute left-0 top-0 h-px origin-left bg-ink/45" style={{ width: len, transform: `rotate(${ang}rad)` }} />
+                {/* label, right-aligned to the offset point */}
+                <div className="absolute left-0 top-0" style={{ transform: `translate(${c.dx}px, ${c.dy}px)` }}>
+                  <div style={{ transform: 'translate(-100%, -50%)' }}>
+                    <div className="whitespace-nowrap text-right text-xs font-semibold uppercase tracking-[0.3em] text-amber-dark" style={{ textShadow: '0 1px 12px rgba(255,255,255,0.9)' }}>{c.kicker}</div>
+                    <div className="whitespace-nowrap text-right text-2xl font-semibold tracking-tight text-ink md:text-3xl" style={{ textShadow: '0 1px 18px rgba(255,255,255,0.95)' }}>{c.label}</div>
+                  </div>
+                </div>
               </div>
-            ))}
+            )
+          })}
+        </div>
 
-            {/* Final CTA */}
-            <div ref={ctaRef} className="absolute top-1/2 -translate-y-1/2" style={{ opacity: 0, willChange: 'opacity, transform' }}>
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-gray-600">Stop searching</p>
-              <h1 className="text-5xl font-semibold leading-[0.95] tracking-tight text-ink md:text-7xl" style={{ textShadow: '0 2px 40px rgba(255,255,255,0.85)' }}>Start hauling.</h1>
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link href="/dispatch" className="rounded-full bg-ink px-6 py-3 font-medium text-white transition-colors hover:bg-ink-dark">Get Dispatched</Link>
-                <a href="#services" className="rounded-full bg-white/80 px-6 py-3 font-medium text-gray-800 backdrop-blur-sm transition-colors hover:bg-white">See Our Rates</a>
-              </div>
+        {/* Fixed beats: opening headline + closing CTA */}
+        <div className="pointer-events-none absolute inset-0 flex flex-col justify-center px-8 md:px-[8vw]">
+          <div ref={headlineRef} className="max-w-xl" style={{ opacity: 0, willChange: 'opacity, transform' }}>
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-gray-600">Truck Dispatching</p>
+            <h1 className="whitespace-pre-line text-5xl font-semibold leading-[0.95] tracking-tight text-ink md:text-7xl" style={{ textShadow: '0 2px 40px rgba(255,255,255,0.85)' }}>{'Premium.\nDispatched.'}</h1>
+            <p className="mt-5 max-w-md text-lg text-gray-600 md:text-xl" style={{ textShadow: '0 1px 20px rgba(255,255,255,0.9)' }}>Your miles deserve better rates.</p>
+          </div>
+
+          <div ref={ctaRef} className="absolute max-w-xl px-8 md:px-[8vw]" style={{ left: 0, opacity: 0, willChange: 'opacity, transform' }}>
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-gray-600">Stop searching</p>
+            <h1 className="text-5xl font-semibold leading-[0.95] tracking-tight text-ink md:text-7xl" style={{ textShadow: '0 2px 40px rgba(255,255,255,0.85)' }}>Start hauling.</h1>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link href="/dispatch" className="rounded-full bg-ink px-6 py-3 font-medium text-white transition-colors hover:bg-ink-dark">Get Dispatched</Link>
+              <a href="#services" className="rounded-full bg-white/80 px-6 py-3 font-medium text-gray-800 backdrop-blur-sm transition-colors hover:bg-white">See Our Rates</a>
             </div>
           </div>
         </div>

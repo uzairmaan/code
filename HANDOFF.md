@@ -66,11 +66,16 @@ static `HeroVideo`.
   an easeOut dolly push-in (zoom 1.06→1.34, responsive from the first scroll) with
   pulsing headlight glow, soft vignette, film grain. Poster:
   `public/hero-cinematic.jpg`. Re-run: `python3 scripts/gen-hero-frames.py`.
-- **Component:** `components/sections/hero-cinematic.tsx` — sticky 420vh stage, HiDPI
-  cover-fit canvas, continuous rAF scrub (robust to the app's Lenis), four crossfading
-  copy beats + final CTA, progress bar, scroll hint, and a `prefers-reduced-motion`
-  static-poster fallback. Sticky **280vh** stage (snappy). Light theme (NOT the skill's
-  dark demo styling). Wired into `app/page.tsx`. (`hero-video.tsx` kept, not imported.)
+- **Component:** `components/sections/hero-cinematic.tsx` — sticky **300vh** stage, HiDPI
+  cover-fit canvas, continuous rAF scrub (robust to the app's Lenis). Overlay = an
+  opening headline + closing CTA (fixed, left-aligned) PLUS three **part-anchored
+  callouts** (headlights / cab / wheels) that reveal on scroll and TRACK their part as
+  the frame zooms — the generator's push-in transform is mirrored in JS (the SRC_W/
+  ZOOM_*/FOCAL_* constants must match `gen-hero-frames.py`) to map a source point to
+  screen. Progress bar, scroll hint, `prefers-reduced-motion` poster fallback. The rAF
+  loop retries painting the current frame until its image decodes, and a poster sits
+  behind the canvas, so the hero never flashes black while 48 MB of frames load. Callouts
+  are desktop-only (`md:` and up). Light theme. Wired into `app/page.tsx`.
 - **Verified:** `npm run build` and `GITHUB_PAGES=true npm run build` both pass;
   Playwright confirmed the canvas paints, frames advance on scroll, and all four copy
   beats crossfade (screenshots at p=0 / 0.32 / 0.62 / 0.95).
